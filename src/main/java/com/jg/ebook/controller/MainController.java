@@ -10,6 +10,7 @@ public class MainController {
 
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String mainPage(Model model){
+
         return "ebook/ebook";
     }
 }
