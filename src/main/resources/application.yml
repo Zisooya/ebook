@@ -1,0 +1,15 @@
+server:
+  port: 18080
+spring:
+  #정적 리소스(HTML, JS, CSS) 바로 적용 설정
+  devtools:
+    livereload:
+      enabled: true
+    remote:
+      restart:
+        enabled: false
+  #타임리프 설정
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
