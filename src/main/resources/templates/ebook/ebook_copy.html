@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ebook</title>
+	<!-- 폰트 설정 -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+	<!-- 제이쿼리 설정 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+			integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="/js/lib/turn.min.js"></script>
+	<!-- css -->
+	<link rel="stylesheet" type="text/css" href="/css/common.css"/>
+</head>
+<style>
+    body{
+        background:#ccc;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    /*#book{
+        width:800px;
+        height:500px;
+    }
+
+    #book .turn-page{
+        background-color:white;
+    }
+
+    #book .cover{
+        background:#333;
+    }
+
+    #book .cover h1{
+        color:white;
+        text-align:center;
+        font-size:50px;
+        line-height:500px;
+        margin:0px;
+    }
+
+    #book .loader{
+        background-image:url(/loader.gif);
+        width:24px;
+        height:24px;
+        display:block;
+        position:absolute;
+        top:238px;
+        left:188px;
+    }
+
+    #book .data{
+        text-align:center;
+        font-size:40px;
+        color:#999;
+        line-height:500px;
+    }
+
+    #controls{
+        width:800px;
+        text-align:center;
+        margin:20px 0px;
+        font:30px arial;
+    }
+
+    #controls input, #controls label{
+        font:30px arial;
+    }
+
+    !*#book .odd{
+		background-image:-webkit-linear-gradient(left, #FFF 95%, #ddd 100%);
+		background-image:-moz-linear-gradient(left, #FFF 95%, #ddd 100%);
+		background-image:-o-linear-gradient(left, #FFF 95%, #ddd 100%);
+		background-image:-ms-linear-gradient(left, #FFF 95%, #ddd 100%);
+	}
+
+	#book .even{
+		background-image:-webkit-linear-gradient(right, #FFF 95%, #ddd 100%);
+		background-image:-moz-linear-gradient(right, #FFF 95%, #ddd 100%);
+		background-image:-o-linear-gradient(right, #FFF 95%, #ddd 100%);
+		background-image:-ms-linear-gradient(right, #FFF 95%, #ddd 100%);
+	}*!
+
+    .wrap {
+        width: 860px;
+        margin: 0 auto;
+    }
+
+    .wrap-book {
+        display: flex;
+        align-items: center;
+        margin-top: 60px;
+        background-color: white;
+    }
+
+    .left-btn,
+    .right-btn {
+        border: 0;
+        background-color: white;
+    }
+
+    .left-btn img,
+    .right-btn img {
+        width: 20px;
+    }*/
+
+
+    #book{
+        width:60vw !important;
+        height:70vh !important;
+    }
+
+    #book .turn-page-wrapper{
+        width:30vw !important;
+        height:70vh !important;
+    }
+
+    #book .turn-page{
+        background-color:white;
+        width:30vw !important;
+        height:70vh !important;
+    }
+
+    #book .cover{
+        background:#333;
+    }
+
+    #book .cover h1{
+        color:white;
+        text-align:center;
+        font-size:50px;
+        line-height:500px;
+        margin:0px;
+    }
+
+    #book .loader{
+        background-image:url(/loader.gif);
+        width:24px;
+        height:24px;
+        display:block;
+        position:absolute;
+        top:238px;
+        left:188px;
+    }
+
+    #book .data{
+        text-align:center;
+        font-size:40px;
+        color:#999;
+        line-height:500px;
+    }
+
+    #controls{
+        width:60vw !important;
+        text-align:center;
+        margin:20px 0px;
+        font:30px arial;
+    }
+
+    #controls input, #controls label{
+        font:30px arial;
+    }
+
+    .wrap {
+        width: 62vw;
+        margin: 0 auto;
+    }
+
+    .wrap-book {
+        display: flex;
+        align-items: center;
+        margin-top: 5vw;
+        background-color: white;
+    }
+
+    .left-btn,
+    .right-btn {
+        border: 0;
+        background-color: white;
+    }
+
+    .left-btn img,
+    .right-btn img {
+        width: 20px;
+    }
+
+    /* PC (해상도 1024px)*/
+    @media all and (min-width:1024px) {
+
+	}
+
+    /* 테블릿 가로, 테블릿 세로 (해상도 768px ~ 1023px)*/
+    @media all and (min-width:768px) and (max-width:1023px) {
+
+	}
+
+    /* 모바일 가로, 모바일 세로 (해상도 480px ~ 767px)*/
+    @media all and (max-width:767px) {
+
+	}
+</style>
+<script>
+	$(function(){
+		$('#next').on('click', function(e){
+			if (e.target && e.target.tagName.toLowerCase()!='input'){
+				$('#book').turn('next');
+			}
+		});
+
+		$('#prev').on('click', function(e){
+			if (e.target && e.target.tagName.toLowerCase()!='input'){
+				$('#book').turn('previous');
+			}
+		});
+	})
+
+	// Sample using dynamic pages with turn.js
+
+	var numberOfPages = 20;
+
+	// Adds the pages that the book will need
+	function addPage(page, book) {
+		//  First check if the page is already in the book
+		if (!book.turn('hasPage', page)) {
+			// Create an element for this page
+			var element = $('<div />', {'class': 'page '+((page%2==0) ? 'odd' : 'even'), 'id': 'page-'+page}).html('<i class="loader"></i>');
+			// If not then add the page
+			book.turn('addPage', element, page);
+			// Let's assum that the data is comming from the server and the request takes 1s.
+			setTimeout(function(){
+				element.html('<div class="data"><img src="/img/contens/'+page+'.jpg" style="width: 30vw; height: 70vh;"></img></div>');
+			}, 1000);
+		}
+	}
+
+	$(window).ready(function(){
+		$('#book').turn({acceleration: true,
+			pages: numberOfPages,
+			elevation: 50,
+			gradients: !$.isTouch,
+			when: {
+				turning: function(e, page, view) {
+
+					// Gets the range of pages that the book needs right now
+					var range = $(this).turn('range', page);
+
+					// Check if each page is within the book
+					for (page = range[0]; page<=range[1]; page++)
+						addPage(page, $(this));
+
+				},
+				turned: function(e, page) {
+					$('#page-number').val(page);
+				}
+			}
+		});
+
+		$('#number-pages').html(numberOfPages);
+
+		$('#page-number').keydown(function(e){
+			if (e.keyCode==13)
+				$('#book').turn('page', $('#page-number').val());
+		});
+	});
+
+	$(window).bind('keydown', function(e){
+		if (e.target && e.target.tagName.toLowerCase()!='input'){
+			if (e.keyCode==37)
+				$('#book').turn('previous');
+			else if (e.keyCode==39)
+				$('#book').turn('next');
+		}
+	})
+
+</script>
+<body>
+
+<div class="wrap">
+	<div class="wrap-book">
+		<button class="left-btn" id="prev">
+			<img src="/img/icon/arrow_left.png"></img>
+		</button>
+		<div id="book">
+			<div class="cover"><h1>The Bible</h1></div>
+		</div>
+		<button class="right-btn" id="next">
+			<img src="/img/icon/arrow_right.png"></img>
+		</button>
+	</div>
+
+	<div id="controls">
+		<label for="page-number">Page:</label> <input type="text" size="3" id="page-number"> of <span id="number-pages"></span>
+	</div>
+</div>
+</body>
+</html>
