@@ -21,6 +21,7 @@
         background:#ccc;
         width: 100vw;
         height: 100vh;
+        overflow: hidden;
     }
 
     /*#book{
@@ -111,19 +112,16 @@
 
 
     #book{
-        width:60vw !important;
-        height:70vh !important;
+        width:100% !important;
     }
 
     #book .turn-page-wrapper{
-        width:30vw !important;
-        height:70vh !important;
+        width:100% !important;
     }
 
     #book .turn-page{
         background-color:white;
-        width:30vw !important;
-        height:70vh !important;
+        width:100% !important;
     }
 
     #book .cover{
@@ -156,18 +154,17 @@
     }
 
     #controls{
-        width:60vw !important;
+        width:100% !important;
         text-align:center;
         margin:20px 0px;
-        font:30px arial;
     }
 
     #controls input, #controls label{
-        font:30px arial;
     }
 
     .wrap {
-        width: 62vw;
+        width: calc((100vh/1.414)*2);
+        height: 100vh;
         margin: 0 auto;
     }
 
@@ -189,20 +186,54 @@
         width: 20px;
     }
 
-    /* PC (해상도 1024px)*/
-    @media all and (min-width:1024px) {
+    .page-navi-left {
+        width: fit-content;
+        height: fit-content;
+        border: 1px solid blue;
+        position: fixed;
+        left: 33%;
+        bottom: 32%;
+        z-index: 99999;
+    }
 
-	}
+    .page-navi-right {
+        width: fit-content;
+        height: fit-content;
+        border: 1px solid red;
+        position: fixed;
+        left: 63%;
+        bottom: 32%;
+        z-index: 99999;
+    }
 
-    /* 테블릿 가로, 테블릿 세로 (해상도 768px ~ 1023px)*/
+    /* 노트북 & 테블릿 가로 (해상도 1024px ~ 1279px)*/
+    @media all and (min-width:1024px) and (max-width:1279px) {
+        body {
+            background-color: aquamarine;
+        }
+    }
+
+    /* 테블릿 가로 (해상도 768px ~ 1023px)*/
+    /* 아이폰(12Pro) 회전 방향*/
     @media all and (min-width:768px) and (max-width:1023px) {
+        body {
+            background-color: darkorange;
+        }
+    }
 
-	}
+    /* 모바일 가로 & 테블릿 세로 (해상도 480px ~ 767px)*/
+    @media all and (min-width:480px) and (max-width:767px) {
+        body {
+            background-color: pink;
+        }
+    }
 
-    /* 모바일 가로, 모바일 세로 (해상도 480px ~ 767px)*/
-    @media all and (max-width:767px) {
-
-	}
+    /* 모바일 세로 (해상도 ~ 479px)*/
+    @media all and (max-width:479px) {
+        body {
+            background-color: gold;
+        }
+    }
 </style>
 <script>
 	$(function(){
@@ -217,6 +248,11 @@
 				$('#book').turn('previous');
 			}
 		});
+
+		//body 값을 계산해서 페이지를 넘김
+		//pageTurn_checkBodyWidth();
+
+		pageTurn_checkWrapWidth();
 	})
 
 	// Sample using dynamic pages with turn.js
@@ -256,11 +292,13 @@
 				},
 				turned: function(e, page) {
 					$('#page-number').val(page);
+					$('#left-page-number').val((page-1));
+					$('#right-page-number').val(page);
 				}
 			}
 		});
 
-		$('#number-pages').html(numberOfPages);
+		$('.number-pages').html(numberOfPages);
 
 		$('#page-number').keydown(function(e){
 			if (e.keyCode==13)
@@ -277,24 +315,59 @@
 		}
 	})
 
+	//body 값을 계산해서 페이지를 넘김
+	function pageTurn_checkBodyWidth (){
+		$('body').on('click', function(e){
+			if (e.target && e.target.tagName.toLowerCase()!='input'){
+				if(e.pageX <= $(this).width()/2){
+					alert('previous');
+					$('#book').turn('previous');
+				}
+				else{
+					alert('next');
+					$('#book').turn('next');
+				}
+			}
+		});
+	}
+
+	//wrap 값을 계산해서 페이지를 넘김
+	function pageTurn_checkWrapWidth (){
+		$('.wrap').on('click', function(e){
+			if (e.target && e.target.tagName.toLowerCase()!='input'){
+				let clickPoint = e.pageX;
+				let halfBody = $('body').outerWidth()/2;
+				let halfWarp = $(this).outerWidth()/2;
+				let startPoint = halfBody - halfWarp;
+				let endPoint = halfBody + halfWarp;
+				alert('clickPoint : '+clickPoint+', halfBody : '+halfBody+', halfWarp : '+halfWarp+', startPoint : '+startPoint+', endPoint : '+endPoint);
+				if(clickPoint >= startPoint && clickPoint <= halfBody){
+					alert('previous');
+					$('#book').turn('previous');
+				}
+				else if(clickPoint >= halfBody+1 && clickPoint <= endPoint){
+					alert('next');
+					$('#book').turn('next');
+				}
+				else{}
+			}
+		});
+	}
 </script>
 <body>
 
 <div class="wrap">
-	<div class="wrap-book">
-		<button class="left-btn" id="prev">
-			<img src="/img/icon/arrow_left.png"></img>
-		</button>
-		<div id="book">
-			<div class="cover"><h1>The Bible</h1></div>
-		</div>
-		<button class="right-btn" id="next">
-			<img src="/img/icon/arrow_right.png"></img>
-		</button>
+	<div id="book">
+		<div class="cover"><h1>The Bible</h1></div>
 	</div>
 
 	<div id="controls">
-		<label for="page-number">Page:</label> <input type="text" size="3" id="page-number"> of <span id="number-pages"></span>
+		<div class="page-navi-left">
+			<label for="left-page-number"></label> <input type="text" size="3" id="left-page-number">/<span class="number-pages"></span>
+		</div>
+		<div class="page-navi-right">
+			<label for="right-page-number"></label> <input type="text" size="3" id="right-page-number">/<span class="number-pages"></span>
+		</div>
 	</div>
 </div>
 </body>
