@@ -166,29 +166,41 @@
             margin:0;
         }
 
-        .page-navi {
+        #controls-m {
+            display: block;
+            width: 100%;
+            height: fit-content;
+            text-align: center;
             font-size: 14px;
-            z-index: 99999;
-            position: fixed;
-            left: 36vw;
-            bottom: 18%;
+            z-index: 9999999;
+            position: relative;
+            top: -5%;
         }
 
-        .page-navi .number-pages {
-            color: #999999;
+        .page-navi {
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .number-pages {
+            display: inline-block;
+            text-align: left;
+            width: 40px;
+            height: fit-content;
             padding: 0 5px;
+            box-sizing: border-box;
+            color: #999999;
         }
 
         #page-number {
+            display: inline-block;
             text-align: right;
             width: 40px;
             height: fit-content;
             padding: 0 5px;
+            box-sizing: border-box;
             background: transparent;
             border: none;
-            font-size: 14px;
-
-
         }
 
     }
@@ -239,7 +251,7 @@
             //page에 element 요소를 추가
             book.turn('addPage', element, page);
 
-            // 데이터가 서버에서 오고 있고 요청에 1초가 걸린다고 가정
+            //데이터가 서버에서 오고 있고 요청에 1초가 걸린다고 가정
             setTimeout(function(){
                 element.html('<div class="data">Data for page '+page+'</div>');
             }, 1000);
@@ -384,11 +396,11 @@
 <!-- 모바일 영역 -->
 <div id="mobile-wrap">
     <div id="book-m">
-        <div class="cover"><h1>The Bible(m)</h1></div>
+        <div class="cover"><h1>Title(m)</h1></div>
     </div>
     <div id="controls-m">
         <div class="page-navi">
-            <label for="page-number"></label> <input type="text" size="3" id="page-number">/<span class="number-pages"></span>
+            <label for="page-number"></label> <input type="text" id="page-number">/<span class="number-pages"></span>
         </div>
     </div>
 </div>
