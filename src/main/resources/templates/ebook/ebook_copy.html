@@ -24,146 +24,8 @@
         overflow: hidden;
     }
 
-    /*#book{
-        width:800px;
-        height:500px;
-    }
-
-    #book .turn-page{
-        background-color:white;
-    }
-
-    #book .cover{
-        background:#333;
-    }
-
-    #book .cover h1{
-        color:white;
-        text-align:center;
-        font-size:50px;
-        line-height:500px;
-        margin:0px;
-    }
-
-    #book .loader{
-        background-image:url(/loader.gif);
-        width:24px;
-        height:24px;
-        display:block;
-        position:absolute;
-        top:238px;
-        left:188px;
-    }
-
-    #book .data{
-        text-align:center;
-        font-size:40px;
-        color:#999;
-        line-height:500px;
-    }
-
-    #controls{
-        width:800px;
-        text-align:center;
-        margin:20px 0px;
-        font:30px arial;
-    }
-
-    #controls input, #controls label{
-        font:30px arial;
-    }
-
-    !*#book .odd{
-		background-image:-webkit-linear-gradient(left, #FFF 95%, #ddd 100%);
-		background-image:-moz-linear-gradient(left, #FFF 95%, #ddd 100%);
-		background-image:-o-linear-gradient(left, #FFF 95%, #ddd 100%);
-		background-image:-ms-linear-gradient(left, #FFF 95%, #ddd 100%);
-	}
-
-	#book .even{
-		background-image:-webkit-linear-gradient(right, #FFF 95%, #ddd 100%);
-		background-image:-moz-linear-gradient(right, #FFF 95%, #ddd 100%);
-		background-image:-o-linear-gradient(right, #FFF 95%, #ddd 100%);
-		background-image:-ms-linear-gradient(right, #FFF 95%, #ddd 100%);
-	}*!
-
     .wrap {
-        width: 860px;
-        margin: 0 auto;
-    }
-
-    .wrap-book {
-        display: flex;
-        align-items: center;
-        margin-top: 60px;
-        background-color: white;
-    }
-
-    .left-btn,
-    .right-btn {
-        border: 0;
-        background-color: white;
-    }
-
-    .left-btn img,
-    .right-btn img {
-        width: 20px;
-    }*/
-
-
-    #book{
-        width:100% !important;
-    }
-
-    #book .turn-page-wrapper{
-        width:100% !important;
-    }
-
-    #book .turn-page{
-        background-color:white;
-        width:100% !important;
-    }
-
-    #book .cover{
-        background:#333;
-    }
-
-    #book .cover h1{
-        color:white;
-        text-align:center;
-        font-size:50px;
-        line-height:500px;
-        margin:0px;
-    }
-
-    #book .loader{
-        background-image:url(/loader.gif);
-        width:24px;
-        height:24px;
-        display:block;
-        position:absolute;
-        top:238px;
-        left:188px;
-    }
-
-    #book .data{
-        text-align:center;
-        font-size:40px;
-        color:#999;
-        line-height:500px;
-    }
-
-    #controls{
-        width:100% !important;
-        text-align:center;
-        margin:20px 0px;
-    }
-
-    #controls input, #controls label{
-    }
-
-    .wrap {
-        width: calc((100vh/1.414)*2);
+        width: calc((100vh/1.414)*2) !important;
         height: 100vh;
         margin: 0 auto;
     }
@@ -175,37 +37,103 @@
         background-color: white;
     }
 
-    .left-btn,
-    .right-btn {
-        border: 0;
-        background-color: white;
+    #book{
+        width:calc((100vh/1.414)*2) !important;
+        height: 100% !important;
     }
 
-    .left-btn img,
-    .right-btn img {
-        width: 20px;
+    #book .turn-page-wrapper{
+        /*width:calc(100vh/1.414) !important;
+        height: 100% !important;*/
+    }
+
+    #book .turn-page{
+        background-color: #FFF;
+        /*width:calc(100vh/1.414) !important;
+        height: 100% !important;*/
+    }
+
+    #book .cover{
+        background:#333;
+    }
+
+    #book .cover h1{
+        color:white;
+        text-align:center;
+        font-size:50px;
+        line-height:500px;
+        margin:0px;
+    }
+
+    #book .loader{
+        background-image:url(/loader.gif);
+        width:24px;
+        height:24px;
+        display:block;
+        position:absolute;
+        top:238px;
+        left:188px;
+    }
+
+    #book .data{
+        /*width:calc(100vh/1.414) !important;
+        height: 100% !important;*/
+        text-align:center;
+        font-size:40px;
+        color:#999;
+        line-height:500px;
+        z-index: 88888;
+    }
+
+    #controls{
+		position: relative;
+        width:100% !important;
+		height: 30px;
+        text-align:center;
+        margin:20px 0px;
+        top: -12%;
+    }
+
+    #controls input, #controls label{
     }
 
     .page-navi-left {
+		display: inline-block;
+        position: relative;
         width: fit-content;
         height: fit-content;
-        border: 1px solid blue;
-        position: fixed;
-        left: 33%;
-        bottom: 32%;
+        right: 20%;
         z-index: 99999;
     }
 
     .page-navi-right {
+        display: inline-block;
+        position: relative;
         width: fit-content;
         height: fit-content;
-        border: 1px solid red;
-        position: fixed;
-        left: 63%;
-        bottom: 32%;
+        left: 22%;
         z-index: 99999;
     }
 
+    #left-page-number {
+        text-align: right;
+        width: 40px;
+        height: fit-content;
+        padding: 0 5px;
+        background: transparent;
+        border: none;
+        font-size: 14px;
+    }
+
+    #right-page-number {
+        text-align: right;
+        width: 40px;
+        height: fit-content;
+        padding: 0 5px;
+        background: transparent;
+        border: none;
+        font-size: 14px;
+    }
     /* 노트북 & 테블릿 가로 (해상도 1024px ~ 1279px)*/
     @media all and (min-width:1024px) and (max-width:1279px) {
         body {
@@ -231,65 +159,131 @@
     /* 모바일 세로 (해상도 ~ 479px)*/
     @media all and (max-width:479px) {
         body {
+            width: 100vw;
+            height: 100vh;
             background-color: gold;
+        }
+        #mobile-wrap {
+            width: 100vw;
+            height: calc(100vw*1.414);
+            margin: calc((100vh - (100vw*1.414))/2) auto;
+        }
+
+        #book-m {
+            width: 100%;
+            height: 100%;
+        }
+        #book-m .turn-page{
+            background-color: #FFF;
+        }
+        #book-m .cover{
+            background: saddlebrown;
+        }
+
+        #book-m .cover h1{
+            color:white;
+            text-align:center;
+            font-size:36px;
+            line-height:300px;
+            margin:0;
+        }
+
+        .page-navi {
+            font-size: 14px;
+            z-index: 99999;
+            position: fixed;
+            left: 36vw;
+            bottom: 18%;
+        }
+
+        .page-navi .number-pages {
+            color: #999999;
+            padding: 0 5px;
+        }
+
+        #page-number {
+            text-align: right;
+            width: 40px;
+            height: fit-content;
+            padding: 0 5px;
+            background: transparent;
+            border: none;
+            font-size: 14px;
         }
     }
 </style>
 <script>
 	$(function(){
-		$('#next').on('click', function(e){
-			if (e.target && e.target.tagName.toLowerCase()!='input'){
-				$('#book').turn('next');
-			}
-		});
-
-		$('#prev').on('click', function(e){
-			if (e.target && e.target.tagName.toLowerCase()!='input'){
-				$('#book').turn('previous');
-			}
-		});
+		if (isMobile()){// 모바일일 경우
+			console.log(navigator.userAgent);
+			printMobileBook();
+		} else {// 모바일 외
+			console.log(navigator.userAgent);
+			printBook();
+		}
 
 		//body 값을 계산해서 페이지를 넘김
 		//pageTurn_checkBodyWidth();
 
+		//book 값을 계산해서 페이지를 넘김
 		pageTurn_checkWrapWidth();
 	})
 
-	// Sample using dynamic pages with turn.js
-
 	var numberOfPages = 20;
 
-	// Adds the pages that the book will need
+	//book 요소에 page 추가하는 함수
 	function addPage(page, book) {
-		//  First check if the page is already in the book
+		//페이지가 이미 책에 있는지 체크
 		if (!book.turn('hasPage', page)) {
-			// Create an element for this page
-			var element = $('<div />', {'class': 'page '+((page%2==0) ? 'odd' : 'even'), 'id': 'page-'+page}).html('<i class="loader"></i>');
-			// If not then add the page
+			//페이지를 위한 요소
+			let element;
+			//모바일 아닌 경우
+			if(!isMobile()){
+				element = $('<div />', {'class': 'page '+((page%2===0) ? 'odd' : 'even'), 'id': 'page-'+page}).html('<i class="loader"></i>');
+
+			}
+			//모바일인 경우
+			else {
+				element = $('<div />', {'class': 'page', 'id': 'page-'+page}).html('<i class="loader"></i>');
+				//element = $('<div />', {'class': 'page', 'id': 'page-'+page}).html('<i class="loader"></i>');
+
+			}
+
+			// page에 element 요소를 추가
 			book.turn('addPage', element, page);
-			// Let's assum that the data is comming from the server and the request takes 1s.
+
+			//데이터가 서버에서 오고 있고 요청에 1초가 걸린다고 가정
 			setTimeout(function(){
-				element.html('<div class="data"><img src='+page+'"/img/contents/.jpg" style="width: 30vw; height: 70vh;"></img></div>');
+				element.html('<div class="data">Data for page '+page+'</div>');
 			}, 1000);
 		}
 	}
 
-	$(window).ready(function(){
-		$('#book').turn({acceleration: true,
-			pages: numberOfPages,
-			elevation: 50,
-			gradients: !$.isTouch,
-			when: {
-				turning: function(e, page, view) {
+	//책 출력하는 함수
+	function printBook(){
+		//모바일 영역 비활성화
+		$('#mobile-wrap').css('display', 'none');
 
-					// Gets the range of pages that the book needs right now
+		//책 생성 및 출력
+		$('#book').turn({
+			acceleration: true,		//하드웨어 가속 모드를 설정
+			pages: numberOfPages,	//전체 페이지 수
+			//elevation: 50,
+			//gradients: !$.isTouch,	//그라데이션 모드 설정
+			gradients: true,			//그라데이션 모드 설정
+			when: {					//turn 이벤트 옵션 정의
+				//페이지가 출력되기 전 실행
+				turning: function(e, page, view) {	//e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+
+					//메모리 보관에 필요한 책의 페이지 범위를 가져옴
 					var range = $(this).turn('range', page);
 
-					// Check if each page is within the book
+					//각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
 					for (page = range[0]; page<=range[1]; page++)
 						addPage(page, $(this));
 
 				},
+				//페이지가 출력된 후 실행
 				turned: function(e, page) {
 					$('#page-number').val(page);
 					$('#left-page-number').val((page-1));
@@ -298,55 +292,129 @@
 			}
 		});
 
-		$('.number-pages').html(numberOfPages);
+		$('.number-pages').html(numberOfPages);	//전체 페이지수 출력
+	}
+
+	function printMobileBook(){
+		//모바일 영역 활성화
+		$('#mobile-wrap').css('display', 'block');
+		$('.wrap').css('display', 'none');
+
+		//책 생성 및 출력
+		$('#book-m').turn({
+			display: 'single',
+			acceleration: true, //하드웨어 가속 모드를 설정
+			pages: numberOfPages,   //전체 페이지 수
+			gradients: true,  //그라데이션 모드 설정
+			when: { //turn 이벤트 옵션 정의
+				//페이지가 출력되기 전 실행
+				turning: function(e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+
+					//메모리 보관에 필요한 책의 페이지 범위를 가져옴
+					let range = $(this).turn('range', page);
+
+					//각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
+					for (page = range[0]; page<=range[1]; page++)
+						addPage(page, $(this));
+				},
+				//페이지가 출력된 후 실행
+				turned: function(e, page) {
+					$('#page-number').val(page);
+				}
+			}
+		});
+
+		$('.number-pages').html(numberOfPages); //전체 페이지수 출력
+
+		$(window).bind('keydown', function(e){
+			if (e.keyCode===37) {
+				$('#book-m').turn('previous');
+			}
+			else if (e.keyCode===39) {
+				$('#book-m').turn('next');
+			}
+
+		});
 
 		$('#page-number').keydown(function(e){
-			if (e.keyCode==13)
-				$('#book').turn('page', $('#page-number').val());
+			inputPageNum = ($(this).val());
+
+			if (e.keyCode===13) {
+				if (inputPageNum <= numberOfPages && inputPageNum !== 0) {
+					$('#book-m').turn('page', inputPageNum);
+				}
+				//범위 벗어난 숫자 입력하면 현재 페이지 유지
+				else {
+					let currentPage = $('#book-m').turn('page');
+					$('#page-number').val(currentPage);
+				}
+			}
 		});
-	});
+
+		// 책 클릭시 이벤트
+		$('#book-m').click(function(e) {
+			let half = $(this).width()/2;
+
+			//책의 왼쪽 클릭시 이전 페이지 이동
+			if(e.offsetX < half) {
+				$('#book-m').turn('previous');
+			}
+			//책의 오른쪽 클릭시 다음 페이지 이동
+			else {
+				$('#book-m').turn('next');
+			}
+		});
+	}
 
 	$(window).bind('keydown', function(e){
 		if (e.target && e.target.tagName.toLowerCase()!='input'){
-			if (e.keyCode==37)
+			if (e.keyCode==37){
 				$('#book').turn('previous');
-			else if (e.keyCode==39)
+			}
+
+			else if (e.keyCode==39){
 				$('#book').turn('next');
+			}
 		}
 	})
+
+	// 모바일인지 체크하는 함수
+	function isMobile(){
+		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+	}
 
 	//body 값을 계산해서 페이지를 넘김
 	function pageTurn_checkBodyWidth (){
 		$('body').on('click', function(e){
 			if (e.target && e.target.tagName.toLowerCase()!='input'){
 				if(e.pageX <= $(this).width()/2){
-					alert('previous');
+					//alert('previous');
 					$('#book').turn('previous');
 				}
 				else{
-					alert('next');
+					//alert('next');
 					$('#book').turn('next');
 				}
 			}
 		});
 	}
 
-	//wrap 값을 계산해서 페이지를 넘김
+	//book 값을 계산해서 페이지를 넘김
 	function pageTurn_checkWrapWidth (){
-		$('.wrap').on('click', function(e){
+		$('#book').on('click', function(e){
 			if (e.target && e.target.tagName.toLowerCase()!='input'){
 				let clickPoint = e.pageX;
 				let halfBody = $('body').outerWidth()/2;
 				let halfWarp = $(this).outerWidth()/2;
 				let startPoint = halfBody - halfWarp;
 				let endPoint = halfBody + halfWarp;
-				alert('clickPoint : '+clickPoint+', halfBody : '+halfBody+', halfWarp : '+halfWarp+', startPoint : '+startPoint+', endPoint : '+endPoint);
+				//alert('clickPoint : '+clickPoint+', halfBody : '+halfBody+', halfWarp : '+halfWarp+', startPoint : '+startPoint+', endPoint : '+endPoint);
 				if(clickPoint >= startPoint && clickPoint <= halfBody){
-					alert('previous');
+					//alert('previous');
 					$('#book').turn('previous');
 				}
 				else if(clickPoint >= halfBody+1 && clickPoint <= endPoint){
-					alert('next');
+					//alert('next');
 					$('#book').turn('next');
 				}
 				else{}
@@ -355,7 +423,7 @@
 	}
 </script>
 <body>
-
+<!-- 데스크톱, 노트북, 태블릿 영역 -->
 <div class="wrap">
 	<div id="book">
 		<div class="cover"><h1>The Bible</h1></div>
@@ -367,6 +435,17 @@
 		</div>
 		<div class="page-navi-right">
 			<label for="right-page-number"></label> <input type="text" size="3" id="right-page-number">/<span class="number-pages"></span>
+		</div>
+	</div>
+</div>
+<!-- 모바일 영역 -->
+<div id="mobile-wrap">
+	<div id="book-m">
+		<div class="cover"><h1>The Bible(m)</h1></div>
+	</div>
+	<div id="controls-m">
+		<div class="page-navi">
+			<label for="page-number"></label> <input type="text" size="3" id="page-number">/<span class="number-pages"></span>
 		</div>
 	</div>
 </div>
