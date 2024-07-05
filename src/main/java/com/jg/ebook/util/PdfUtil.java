@@ -1,10 +1,10 @@
-package com.jg.ebook;
+package com.jg.ebook.util;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,18 +14,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SpringBootTest
-class EbookApplicationTests {
+@Slf4j
+@Component
+public class PdfUtil {
 
-	@Test
-	void contextLoads() {
-	}
-
-	@Test
 	@SneakyThrows
-	public void getTextOfPdf(){
+	public String getTextOfPdf(){
 		// pdf 파일 경로
-		String fileUrl = "C:\\Users\\user\\Desktop/e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록.pdf";
+		String fileUrl = "C:\\Users\\user\\Desktop\\e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록.pdf";
 
 		//PDFBox 설정
 		InputStream stream = new FileInputStream(new File(fileUrl));
@@ -47,14 +43,16 @@ class EbookApplicationTests {
 		Pattern pattern = Pattern.compile(regEx);
 		Matcher matcher = pattern.matcher(extractText);
 
-		System.out.println("=============== start =================");
 		//추출한 텍스트에서 정규식에 의한 특정 문자 추출
 		while (matcher.find()) {
 			emails.add(matcher.group());
 		}
-		System.out.println(extractText);
-		System.out.println("Emails: " + emails);
 
-		System.out.println("=============== end =================");
+		//PDF 파일 스트림 닫기
+		document.close();
+		log.info(extractText);
+
+		return extractText;
 	}
+
 }
