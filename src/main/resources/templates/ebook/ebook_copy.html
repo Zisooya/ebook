@@ -13,6 +13,8 @@
 			integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
 			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="/js/lib/turn.min.js"></script>
+	<script src="/js/init.js"></script>
+	<script src="/js/function.js"></script>
 	<!-- css -->
 	<link rel="stylesheet" type="text/css" href="/css/common.css"/>
 </head>
@@ -213,214 +215,224 @@
     }
 </style>
 <script>
-	$(function(){
-		if (isMobile()){// 모바일일 경우
-			console.log(navigator.userAgent);
-			printMobileBook();
-		} else {// 모바일 외
-			console.log(navigator.userAgent);
-			printBook();
-		}
-
-		//body 값을 계산해서 페이지를 넘김
-		//pageTurn_checkBodyWidth();
-
-		//book 값을 계산해서 페이지를 넘김
-		pageTurn_checkWrapWidth();
-	})
-
-	var numberOfPages = 20;
-
-	//book 요소에 page 추가하는 함수
-	function addPage(page, book) {
-		//페이지가 이미 책에 있는지 체크
-		if (!book.turn('hasPage', page)) {
-			//페이지를 위한 요소
-			let element;
-			//모바일 아닌 경우
-			if(!isMobile()){
-				element = $('<div />', {'class': 'page '+((page%2===0) ? 'odd' : 'even'), 'id': 'page-'+page}).html('<i class="loader"></i>');
-
-			}
-			//모바일인 경우
-			else {
-				element = $('<div />', {'class': 'page', 'id': 'page-'+page}).html('<i class="loader"></i>');
-				//element = $('<div />', {'class': 'page', 'id': 'page-'+page}).html('<i class="loader"></i>');
-
-			}
-
-			// page에 element 요소를 추가
-			book.turn('addPage', element, page);
-
-			//데이터가 서버에서 오고 있고 요청에 1초가 걸린다고 가정
-			setTimeout(function(){
-				element.html('<div class="data">Data for page '+page+'</div>');
-			}, 1000);
-		}
-	}
-
-	//책 출력하는 함수
-	function printBook(){
-		//모바일 영역 비활성화
-		$('#mobile-wrap').css('display', 'none');
-
-		//책 생성 및 출력
-		$('#book').turn({
-			acceleration: true,		//하드웨어 가속 모드를 설정
-			pages: numberOfPages,	//전체 페이지 수
-			//elevation: 50,
-			//gradients: !$.isTouch,	//그라데이션 모드 설정
-			gradients: true,			//그라데이션 모드 설정
-			when: {					//turn 이벤트 옵션 정의
-				//페이지가 출력되기 전 실행
-				turning: function(e, page, view) {	//e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
-
-					//메모리 보관에 필요한 책의 페이지 범위를 가져옴
-					var range = $(this).turn('range', page);
-
-					//각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
-					for (page = range[0]; page<=range[1]; page++)
-						addPage(page, $(this));
-
-				},
-				//페이지가 출력된 후 실행
-				turned: function(e, page) {
-					$('#page-number').val(page);
-					$('#left-page-number').val((page-1));
-					$('#right-page-number').val(page);
-				}
-			}
-		});
-
-		$('.number-pages').html(numberOfPages);	//전체 페이지수 출력
-	}
-
-	function printMobileBook(){
-		//모바일 영역 활성화
-		$('#mobile-wrap').css('display', 'block');
-		$('.wrap').css('display', 'none');
-
-		//책 생성 및 출력
-		$('#book-m').turn({
-			display: 'single',
-			acceleration: true, //하드웨어 가속 모드를 설정
-			pages: numberOfPages,   //전체 페이지 수
-			gradients: true,  //그라데이션 모드 설정
-			when: { //turn 이벤트 옵션 정의
-				//페이지가 출력되기 전 실행
-				turning: function(e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
-
-					//메모리 보관에 필요한 책의 페이지 범위를 가져옴
-					let range = $(this).turn('range', page);
-
-					//각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
-					for (page = range[0]; page<=range[1]; page++)
-						addPage(page, $(this));
-				},
-				//페이지가 출력된 후 실행
-				turned: function(e, page) {
-					$('#page-number').val(page);
-				}
-			}
-		});
-
-		$('.number-pages').html(numberOfPages); //전체 페이지수 출력
-
-		$(window).bind('keydown', function(e){
-			if (e.keyCode===37) {
-				$('#book-m').turn('previous');
-			}
-			else if (e.keyCode===39) {
-				$('#book-m').turn('next');
-			}
-
-		});
-
-		$('#page-number').keydown(function(e){
-			inputPageNum = ($(this).val());
-
-			if (e.keyCode===13) {
-				if (inputPageNum <= numberOfPages && inputPageNum !== 0) {
-					$('#book-m').turn('page', inputPageNum);
-				}
-				//범위 벗어난 숫자 입력하면 현재 페이지 유지
-				else {
-					let currentPage = $('#book-m').turn('page');
-					$('#page-number').val(currentPage);
-				}
-			}
-		});
-
-		// 책 클릭시 이벤트
-		$('#book-m').click(function(e) {
-			let half = $(this).width()/2;
-
-			//책의 왼쪽 클릭시 이전 페이지 이동
-			if(e.offsetX < half) {
-				$('#book-m').turn('previous');
-			}
-			//책의 오른쪽 클릭시 다음 페이지 이동
-			else {
-				$('#book-m').turn('next');
-			}
-		});
-	}
-
-	$(window).bind('keydown', function(e){
-		if (e.target && e.target.tagName.toLowerCase()!='input'){
-			if (e.keyCode==37){
-				$('#book').turn('previous');
-			}
-
-			else if (e.keyCode==39){
-				$('#book').turn('next');
-			}
-		}
-	})
-
-	// 모바일인지 체크하는 함수
-	function isMobile(){
-		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+$(function(){
+	if (isMobile()){// 모바일일 경우
+		console.log(navigator.userAgent);
+		printMobileBook();
+	} else {// 모바일 외
+		printBook();
 	}
 
 	//body 값을 계산해서 페이지를 넘김
-	function pageTurn_checkBodyWidth (){
-		$('body').on('click', function(e){
-			if (e.target && e.target.tagName.toLowerCase()!='input'){
-				if(e.pageX <= $(this).width()/2){
-					//alert('previous');
-					$('#book').turn('previous');
-				}
-				else{
-					//alert('next');
-					$('#book').turn('next');
-				}
-			}
-		});
-	}
+	//pageTurn_checkBodyWidth();
 
 	//book 값을 계산해서 페이지를 넘김
-	function pageTurn_checkWrapWidth (){
-		$('#book').on('click', function(e){
-			if (e.target && e.target.tagName.toLowerCase()!='input'){
-				let clickPoint = e.pageX;
-				let halfBody = $('body').outerWidth()/2;
-				let halfWarp = $(this).outerWidth()/2;
-				let startPoint = halfBody - halfWarp;
-				let endPoint = halfBody + halfWarp;
-				//alert('clickPoint : '+clickPoint+', halfBody : '+halfBody+', halfWarp : '+halfWarp+', startPoint : '+startPoint+', endPoint : '+endPoint);
-				if(clickPoint >= startPoint && clickPoint <= halfBody){
-					//alert('previous');
-					$('#book').turn('previous');
-				}
-				else if(clickPoint >= halfBody+1 && clickPoint <= endPoint){
-					//alert('next');
-					$('#book').turn('next');
-				}
-				else{}
-			}
-		});
+	pageTurn_checkWrapWidth();
+
+	cinit_view('/pdf', 'pdfIdx');
+})
+
+var numberOfPages = 20;
+
+//book 요소에 page 추가하는 함수
+function addPage(page, book) {
+	//페이지가 이미 책에 있는지 체크
+	if (!book.turn('hasPage', page)) {
+		//페이지를 위한 요소
+		let element;
+		//모바일 아닌 경우
+		if(!isMobile()){
+			element = $('<div />', {'class': 'page '+((page%2===0) ? 'odd' : 'even'), 'id': 'page-'+page}).html('<i class="loader"></i>');
+
+		}
+		//모바일인 경우
+		else {
+			element = $('<div />', {'class': 'page', 'id': 'page-'+page}).html('<i class="loader"></i>');
+			//element = $('<div />', {'class': 'page', 'id': 'page-'+page}).html('<i class="loader"></i>');
+
+		}
+
+		// page에 element 요소를 추가
+		book.turn('addPage', element, page);
+
+		//데이터가 서버에서 오고 있고 요청에 1초가 걸린다고 가정
+		setTimeout(function(){
+			element.html('<div class="data">Data for page '+page+'</div>');
+		}, 1000);
 	}
+}
+
+//책 출력하는 함수
+function printBook(){
+	//모바일 영역 비활성화
+	$('#mobile-wrap').css('display', 'none');
+
+	//책 생성 및 출력
+	$('#book').turn({
+		acceleration: true,		//하드웨어 가속 모드를 설정
+		pages: numberOfPages,	//전체 페이지 수
+		//elevation: 50,
+		//gradients: !$.isTouch,	//그라데이션 모드 설정
+		gradients: true,			//그라데이션 모드 설정
+		when: {					//turn 이벤트 옵션 정의
+			//페이지가 출력되기 전 실행
+			turning: function(e, page, view) {	//e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+
+				//메모리 보관에 필요한 책의 페이지 범위를 가져옴
+				var range = $(this).turn('range', page);
+
+				//각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
+				for (page = range[0]; page<=range[1]; page++)
+					addPage(page, $(this));
+
+			},
+			//페이지가 출력된 후 실행
+			turned: function(e, page) {
+				$('#page-number').val(page);
+				$('#left-page-number').val((page-1));
+				$('#right-page-number').val(page);
+			}
+		}
+	});
+
+	$('.number-pages').html(numberOfPages);	//전체 페이지수 출력
+}
+
+function printMobileBook(){
+	//모바일 영역 활성화
+	$('#mobile-wrap').css('display', 'block');
+	$('.wrap').css('display', 'none');
+
+	//책 생성 및 출력
+	$('#book-m').turn({
+		display: 'single',
+		acceleration: true, //하드웨어 가속 모드를 설정
+		pages: numberOfPages,   //전체 페이지 수
+		gradients: true,  //그라데이션 모드 설정
+		when: { //turn 이벤트 옵션 정의
+			//페이지가 출력되기 전 실행
+			turning: function(e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+
+				//메모리 보관에 필요한 책의 페이지 범위를 가져옴
+				let range = $(this).turn('range', page);
+
+				//각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
+				for (page = range[0]; page<=range[1]; page++)
+					addPage(page, $(this));
+			},
+			//페이지가 출력된 후 실행
+			turned: function(e, page) {
+				$('#page-number').val(page);
+			}
+		}
+	});
+
+	$('.number-pages').html(numberOfPages); //전체 페이지수 출력
+
+	$(window).bind('keydown', function(e){
+		if (e.keyCode===37) {
+			$('#book-m').turn('previous');
+		}
+		else if (e.keyCode===39) {
+			$('#book-m').turn('next');
+		}
+
+	});
+
+	$('#page-number').keydown(function(e){
+		inputPageNum = ($(this).val());
+
+		if (e.keyCode===13) {
+			if (inputPageNum <= numberOfPages && inputPageNum !== 0) {
+				$('#book-m').turn('page', inputPageNum);
+			}
+			//범위 벗어난 숫자 입력하면 현재 페이지 유지
+			else {
+				let currentPage = $('#book-m').turn('page');
+				$('#page-number').val(currentPage);
+			}
+		}
+	});
+
+	// 책 클릭시 이벤트
+	$('#book-m').click(function(e) {
+		let half = $(this).width()/2;
+
+		//책의 왼쪽 클릭시 이전 페이지 이동
+		if(e.offsetX < half) {
+			$('#book-m').turn('previous');
+		}
+		//책의 오른쪽 클릭시 다음 페이지 이동
+		else {
+			$('#book-m').turn('next');
+		}
+	});
+}
+
+$(window).bind('keydown', function(e){
+	if (e.target && e.target.tagName.toLowerCase()!='input'){
+		if (e.keyCode==37){
+			$('#book').turn('previous');
+		}
+
+		else if (e.keyCode==39){
+			$('#book').turn('next');
+		}
+	}
+})
+
+// 모바일인지 체크하는 함수
+function isMobile(){
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+//body 값을 계산해서 페이지를 넘김
+function pageTurn_checkBodyWidth (){
+	$('body').on('click', function(e){
+		if (e.target && e.target.tagName.toLowerCase()!='input'){
+			if(e.pageX <= $(this).width()/2){
+				//alert('previous');
+				$('#book').turn('previous');
+			}
+			else{
+				//alert('next');
+				$('#book').turn('next');
+			}
+		}
+	});
+}
+
+//book 값을 계산해서 페이지를 넘김
+function pageTurn_checkWrapWidth (){
+	$('#book').on('click', function(e){
+		if (e.target && e.target.tagName.toLowerCase()!='input'){
+			let clickPoint = e.pageX;
+			let halfBody = $('body').outerWidth()/2;
+			let halfWarp = $(this).outerWidth()/2;
+			let startPoint = halfBody - halfWarp;
+			let endPoint = halfBody + halfWarp;
+			//alert('clickPoint : '+clickPoint+', halfBody : '+halfBody+', halfWarp : '+halfWarp+', startPoint : '+startPoint+', endPoint : '+endPoint);
+			if(clickPoint >= startPoint && clickPoint <= halfBody){
+				//alert('previous');
+				$('#book').turn('previous');
+			}
+			else if(clickPoint >= halfBody+1 && clickPoint <= endPoint){
+				//alert('next');
+				$('#book').turn('next');
+			}
+			else{}
+		}
+	});
+}
+
+function fn_callback(callbackId, resData) {
+	//상품 상세 정보 조회
+	if (callbackId === 'pdf') {
+		let view = resData;
+		console.log('[##### PDF 조회 결과 처리]\n', view);
+
+	} else{}
+}
 </script>
 <body>
 <!-- 데스크톱, 노트북, 태블릿 영역 -->
