@@ -428,7 +428,7 @@ function pageTurn_checkWrapWidth (){
 function fn_callback(callbackId, resData) {
 	//상품 상세 정보 조회
 	if (callbackId === 'pdf') {
-		let view = resData;
+		let view = resData[0];
 		console.log('[##### PDF 조회 결과 처리]\n', view);
 
 	} else{}

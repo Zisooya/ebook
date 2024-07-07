@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MainService {
 
-	public String getPdf(){
+	public String[] getPdf(){
 		PdfUtil pdfUtil = new PdfUtil();
 		return pdfUtil.getTextOfPdf();
 	}

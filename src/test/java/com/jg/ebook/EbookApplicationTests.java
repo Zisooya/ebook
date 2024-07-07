@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -36,13 +38,16 @@ class EbookApplicationTests {
 		String extractText = stripper.getText(document);
 
 		//공백 제거
-		extractText = extractText.trim().replace(" ", "");
+		//extractText = extractText.trim().replace(" ", "");
+
+		//특정 문자열로 가르기
+		String[] splitExtractText = extractText.split("—");
 
 		//특정 문자 추출 (예제: 이메일)
 		Set<String> emails = new HashSet<>();
 
 		//이메일 정규식
-		String regEx = "";
+		String regEx = "—";
 
 		Pattern pattern = Pattern.compile(regEx);
 		Matcher matcher = pattern.matcher(extractText);
@@ -52,9 +57,11 @@ class EbookApplicationTests {
 		while (matcher.find()) {
 			emails.add(matcher.group());
 		}
-		System.out.println(extractText);
-		System.out.println("Emails: " + emails);
-
+		//System.out.println(extractText);
+		System.out.println(Arrays.toString(splitExtractText));
 		System.out.println("=============== end =================");
+
+		//PDF 파일 스트림 닫기
+		document.close();
 	}
 }

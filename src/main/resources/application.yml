@@ -13,3 +13,9 @@ spring:
     cache: false
     prefix: classpath:/templates/
     suffix: .html
+
+#상수 모음
+ebook:
+  value:
+    pdf:
+      dir: C://Users/user/Desktop/

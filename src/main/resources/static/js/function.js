@@ -16,7 +16,7 @@ function cfn_ajaxRequest(url, method, data, callbackId){
 		url: url,
 		type: method,
 		data: data,
-		dataType: 'text',
+		dataType: 'json',
 		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 		//contentType: ' application/json; charset-utf-8',
 		async: true,
