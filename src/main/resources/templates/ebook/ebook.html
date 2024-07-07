@@ -14,9 +14,6 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- ebook 관련 라이브러리 -->
     <script src="/js/lib/turn.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
-
     <!-- css -->
     <link rel="stylesheet" type="text/css" href="/css/common.css"/>
 </head>
@@ -206,14 +203,22 @@
             border: none;
         }
 
+        .page {
+            width: 100%;
+            height: fit-content;
+            white-space: nowrap;
+            overflow: hidden;
+            border: 1px solid black;
+        }
+
     }
 </style>
 <script>
     let numberOfPages = Number(10);
+    let texts = '여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.';
 
     $(function(){
         if (isMobile()){// 모바일일 경우
-            console.log(navigator.userAgent);
             printMobileBook();
         } else {// 모바일 외
             printBook();
@@ -246,22 +251,19 @@
             //모바일인 경우
             else {
                 element = $('<div />', {'class': 'page', 'id': 'page-'+page}).html('<i class="loader"></i>');
-
             }
 
             //page에 element 요소를 추가
             book.turn('addPage', element, page);
 
-            //데이터가 서버에서 오고 있고 요청에 1초가 걸린다고 가정
-            setTimeout(function(){
-                //let printData = loadEpub(page);
-                element.html('<div class="data">Data for page '+page+'</div>');
-            }, 1000);
+            //element.html('<div class="data">Data for page '+page+'</div>');
+            $('#page-'+page).html('');
 
         }
     }
 
     //책 출력하는 함수
+/*
     function printBook(){
         //모바일 영역 비활성화
         $('#mobile-wrap').css('display', 'none');
@@ -307,6 +309,7 @@
             }
         });
     }
+*/
 
     function printMobileBook(){
         //모바일 영역 활성화
@@ -322,58 +325,30 @@
             when: { //turn 이벤트 옵션 정의
                 //페이지가 출력되기 전 실행
                 turning: function(e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
-//epub 테스트
-                    let book = ePub("/img/js_book.epub");
-                    var rendition = book.renderTo("area", {
-                        width: 600,
-                        height: 1000,
-                        flow: "paginated"
-                    });
-                    var displayed = rendition.display();
-                    //console.log(rendition);
-                    console.log(book.spine);
-                    let spine = book.spine;
-                    console.log(spine.get[0]);
-
-                    book.loaded.navigation.then(function(toc){
-                        //console.log(toc);
-
-                    });
-
-                    displayed.then(function(renderer){
-                        //console.log('renderer', renderer);
-                        let next = renderer.next();
-                        //console.log(next);
-                    });
-
-
-
-                    document.addEventListener("keyup", function(e){
-
-                        // Left Key
-                        if ((e.keyCode || e.which) == 37) {
-                            rendition.prev();
-                        }
-
-                        // Right Key
-                        if ((e.keyCode || e.which) == 39) {
-                            rendition.next();
-                        }
-
-                    }, false);
-//epup 테스트 끝
                     //메모리 보관에 필요한 책의 페이지 범위를 가져옴
                     let range = $(this).turn('range', page);
 
                     //각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
                     for (page = range[0]; page<=range[1]; page++) {
                         addPage(page, $(this));
+                        console.log('#page-' + Number(page+1));
+                        console.log($('#page-' + Number(page+1)).attr('id'));
+                        // 실제 사용 예시
+                        let container = $('#page-' + Number(page+1));
+
+                        let printText = updatePrintText(container);
+                        console.log("출력할 문자열:", printText);
+                        console.log("남은 문자열:", texts);
+
+                        // 화면에 출력
+                        container.html(printText);
                     }
 
                 },
                 //페이지가 출력된 후 실행
                 turned: function(e, page) {
                     $('#page-number').val(page);
+
                 }
             }
         });
@@ -419,6 +394,29 @@
             }
         });
     }
+    function isOverflow(element) {
+        console.log(`${element[0].scrollHeight},${element[0].clientHeight}`);
+        return element[0].scrollHeight > element[0].clientHeight;
+    }
+
+    function updatePrintText(container) {
+        let printText = '';
+        let currentText = '';
+
+        for (let i = 0; i < texts.length; i++) {
+            currentText += texts[i];
+            container.text(currentText);
+            if (isOverflow(container)) {
+                break;
+            }
+            printText = currentText;
+        }
+
+        // printText에 출력할 문자열을 담고 나머지 text를 업데이트
+        texts = texts.substring(printText.length);
+        return printText;
+    }
+
 
 </script>
 <body>
