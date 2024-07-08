@@ -1,5 +1,5 @@
 /**
- * [poms 함수] 상세 정보 조회 요청
+ * [ebook 함수] 상세 정보 조회 요청
  * ajax 요청
  * @author ryugyungyoon
  * @param url 요청 url

@@ -1,14 +1,18 @@
 package com.jg.ebook;
 
+import com.jg.ebook.util.PdfUtil;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -16,6 +20,11 @@ import java.util.regex.Pattern;
 
 @SpringBootTest
 class EbookApplicationTests {
+
+	final public static String PDF_EXTENSION = "PDF";		//파일 확장자
+
+	@Value("${ebook.value.pdf.dir}")
+	private String PDF_DIR;
 
 	@Test
 	void contextLoads() {
@@ -25,10 +34,11 @@ class EbookApplicationTests {
 	@SneakyThrows
 	public void getTextOfPdf(){
 		// pdf 파일 경로
-		String fileUrl = "C:\\Users\\user\\Desktop/e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록.pdf";
+		String pdfName = "e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록".concat(".").concat(PdfUtil.PDF_EXTENSION.toLowerCase());
+		String pdfPath = PDF_DIR.concat(pdfName);
 
 		//PDFBox 설정
-		InputStream stream = new FileInputStream(new File(fileUrl));
+		InputStream stream = new FileInputStream(new File(pdfPath));
 		PDDocument document = PDDocument.load(stream);;
 		PDFTextStripper stripper =  new PDFTextStripper();
 
@@ -36,7 +46,10 @@ class EbookApplicationTests {
 		String extractText = stripper.getText(document);
 
 		//공백 제거
-		extractText = extractText.trim().replace(" ", "");
+		//extractText = extractText.trim().replace(" ", "");
+
+		//특정 문자열로 가르기
+		String[] splitExtractText = extractText.split("—");
 
 		//특정 문자 추출 (예제: 이메일)
 		Set<String> emails = new HashSet<>();
@@ -52,9 +65,11 @@ class EbookApplicationTests {
 		while (matcher.find()) {
 			emails.add(matcher.group());
 		}
-		System.out.println(extractText);
-		System.out.println("Emails: " + emails);
-
+		//System.out.println(extractText);
+		System.out.println(Arrays.toString(splitExtractText));
 		System.out.println("=============== end =================");
+
+		//PDF 파일 스트림 닫기
+		document.close();
 	}
 }
