@@ -26,7 +26,7 @@ public class MainController {
 
     @GetMapping("/pdf")
     @ResponseBody
-    public String[] getPdf(){
-        return mainService.getPdf();
+    public String[] getPdf(@RequestParam String fileName){
+        return mainService.getPdf(fileName);
     }
 }

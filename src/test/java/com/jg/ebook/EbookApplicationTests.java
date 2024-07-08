@@ -1,9 +1,11 @@
 package com.jg.ebook;
 
+import com.jg.ebook.util.PdfUtil;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
@@ -19,6 +21,11 @@ import java.util.regex.Pattern;
 @SpringBootTest
 class EbookApplicationTests {
 
+	final public static String PDF_EXTENSION = "PDF";		//파일 확장자
+
+	@Value("${ebook.value.pdf.dir}")
+	private String PDF_DIR;
+
 	@Test
 	void contextLoads() {
 	}
@@ -27,10 +34,11 @@ class EbookApplicationTests {
 	@SneakyThrows
 	public void getTextOfPdf(){
 		// pdf 파일 경로
-		String fileUrl = "C:\\Users\\user\\Desktop/e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록.pdf";
+		String pdfName = "e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록".concat(".").concat(PdfUtil.PDF_EXTENSION.toLowerCase());
+		String pdfPath = PDF_DIR.concat(pdfName);
 
 		//PDFBox 설정
-		InputStream stream = new FileInputStream(new File(fileUrl));
+		InputStream stream = new FileInputStream(new File(pdfPath));
 		PDDocument document = PDDocument.load(stream);;
 		PDFTextStripper stripper =  new PDFTextStripper();
 
@@ -47,7 +55,7 @@ class EbookApplicationTests {
 		Set<String> emails = new HashSet<>();
 
 		//이메일 정규식
-		String regEx = "—";
+		String regEx = "";
 
 		Pattern pattern = Pattern.compile(regEx);
 		Matcher matcher = pattern.matcher(extractText);

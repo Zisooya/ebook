@@ -21,13 +21,13 @@ public class PdfUtil {
 
 	final public static String PDF_EXTENSION = "PDF";		//파일 확장자
 
-	@Value("#{'${ebook.value.pdf.dir}'}")
+	@Value("${ebook.value.pdf.dir}")
 	private String PDF_DIR;
 
 	@SneakyThrows
-	public String[] getTextOfPdf(){
+	public String[] getTextOfPdf(String fileName){
 		// pdf 파일 경로
-		String pdfName = "e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록".concat(".").concat(PdfUtil.PDF_EXTENSION.toLowerCase());
+		String pdfName = fileName.concat(".").concat(PdfUtil.PDF_EXTENSION.toLowerCase());
 		String pdfPath = PDF_DIR.concat(pdfName);
 
 		//PDFBox 설정

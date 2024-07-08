@@ -1,13 +1,16 @@
 package com.jg.ebook.service;
 
 import com.jg.ebook.util.PdfUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class MainService {
 
-	public String[] getPdf(){
-		PdfUtil pdfUtil = new PdfUtil();
-		return pdfUtil.getTextOfPdf();
+	private final PdfUtil pdfUtil;
+
+	public String[] getPdf(String fileName){
+		return pdfUtil.getTextOfPdf(fileName);
 	}
 }
