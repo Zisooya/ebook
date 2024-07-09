@@ -3,9 +3,6 @@ server:
   port: 18080
 
 spring:
-  config:
-    activate:
-      on-profile: local
   #정적 리소스(HTML, JS, CSS) 바로 적용 설정
   devtools:
     livereload:
@@ -24,3 +21,4 @@ ebook:
   value:
     pdf:
       dir: C://Users/user/Desktop/
+
