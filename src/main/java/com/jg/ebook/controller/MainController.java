@@ -15,7 +15,7 @@ public class MainController {
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String mainPage(Model model){
 
-        return "ebook/ebook_copy";
+        return "ebook/ebook";
     }
 
     @GetMapping("/epub")
@@ -26,7 +26,7 @@ public class MainController {
 
     @GetMapping("/pdf")
     @ResponseBody
-    public String[] getPdf(@RequestParam String fileName){
+    public String[] getPdf(@RequestParam("fileName") String fileName){
         return mainService.getPdf(fileName);
     }
 }
