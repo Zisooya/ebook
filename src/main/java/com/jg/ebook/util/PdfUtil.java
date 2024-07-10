@@ -7,13 +7,14 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -25,6 +26,39 @@ public class PdfUtil {
 	private String PDF_DIR;
 
 	@SneakyThrows
+	public String[] getFileStr(String fileName) {
+		// txt 파일 경로
+		String pdfName = fileName.concat(".").concat("txt");
+		String pdfPath = PDF_DIR.concat(pdfName);
+
+		BufferedReader br = new BufferedReader(
+				new FileReader(pdfPath, StandardCharsets.UTF_8)
+		);
+
+		String str;
+
+		String st = br.lines().collect(Collectors.joining("\n"));
+		String[] strArr = st.split("—");
+
+		while ((str = br.readLine()) != null) {
+			//System.out.println(str);
+
+		}
+
+
+		for(int i=0; i<strArr.length; i++) {
+			System.out.println("=============== start =================");
+			System.out.println(i);
+			System.out.println(strArr[i]);
+			System.out.println("=============== end =================");
+		}
+
+		br.close();
+
+		return strArr;
+	}
+
+	@SneakyThrows
 	public String[] getTextOfPdf(String fileName){
 		// pdf 파일 경로
 		String pdfName = fileName.concat(".").concat(PdfUtil.PDF_EXTENSION.toLowerCase());
@@ -32,8 +66,11 @@ public class PdfUtil {
 
 		//PDFBox 설정
 		InputStream stream = new FileInputStream(new File(pdfPath));
-		PDDocument document = PDDocument.load(stream);;
+		PDDocument document = PDDocument.load(stream);
 		PDFTextStripper stripper =  new PDFTextStripper();
+		//"\n" for linux or "\r\n" for Windows
+		//stripper.setAddMoreFormatting(true);
+		//stripper.setLineSeparator("\n");
 
 		//텍스트 추출
 		String extractText = stripper.getText(document);
@@ -63,6 +100,13 @@ public class PdfUtil {
 
 		//PDF 파일 스트림 닫기
 		document.close();
+
+		log.info(Arrays.toString(splitExtractText));
+
+		for(int i=0; i<splitExtractText.length; i++) {
+			System.out.println(splitExtractText[i]);
+			log.info(splitExtractText[i]);
+		}
 
 		return splitExtractText;
 	}
