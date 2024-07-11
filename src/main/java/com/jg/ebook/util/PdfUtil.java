@@ -35,16 +35,11 @@ public class PdfUtil {
 				new FileReader(pdfPath, StandardCharsets.UTF_8)
 		);
 
-		String str;
+		String str = br.lines().collect(Collectors.joining("\n"));
 
-		String st = br.lines().collect(Collectors.joining("\n"));
-		String[] strArr = st.split("—");
-
-		while ((str = br.readLine()) != null) {
-			//System.out.println(str);
-
-		}
-
+		// 3개 이상의 줄바꿈을 하나의 줄바꿈으로 대체
+		str = str.replaceAll("\\n{3,}", "\n");
+		String[] strArr = str.split("—");
 
 		for(int i=0; i<strArr.length; i++) {
 			System.out.println("=============== start =================");
