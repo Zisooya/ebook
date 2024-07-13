@@ -15,7 +15,8 @@ public class MainController {
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String mainPage(Model model){
 
-        return "ebook/ebook";
+        model.addAttribute("imageCount", mainService.getImageCount());
+        return "ebook/ebook_copy2";
     }
 
     @GetMapping("/epub")
