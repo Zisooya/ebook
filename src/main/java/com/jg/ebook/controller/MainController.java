@@ -1,6 +1,7 @@
 package com.jg.ebook.controller;
 
 import com.jg.ebook.service.MainService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +14,9 @@ public class MainController {
     private final MainService mainService;
 
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String mainPage(Model model){
+    public String mainPage(HttpServletRequest req, Model model){
 
-        model.addAttribute("imageCount", mainService.getImageCount());
+        model.addAttribute("imageCount", mainService.getImageCount(req));
         return "ebook/ebook_copy2";
     }
 

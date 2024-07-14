@@ -29,6 +29,8 @@ ebook:
   value:
     pdf:
       dir: C://Users/user/Desktop/
+    img:
+      dir: src/main/resources/static/img/ebook/
 
 
 --- #prod
@@ -57,3 +59,5 @@ ebook:
   value:
     pdf:
       dir: /ebook/pdf/
+    img:
+      dir: /ebook/image/
