@@ -30,7 +30,7 @@ ebook:
     pdf:
       dir: C://Users/user/Desktop/
     img:
-      dir: src/main/resources/static/img/ebook/
+      dir: /img/ebook/
 
 
 --- #prod

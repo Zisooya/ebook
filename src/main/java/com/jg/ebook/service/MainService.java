@@ -1,5 +1,6 @@
 package com.jg.ebook.service;
 
+import com.jg.ebook.dto.response.ImageResponse;
 import com.jg.ebook.util.CommonUtil;
 import com.jg.ebook.util.PdfUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,12 +24,15 @@ public class MainService {
 	@Value("${ebook.value.img.dir}")
 	private String IMG_DIR;
 
+	@Value("${spring.config.activate.on-profile}")
+	private String PROFILE;
+
 	public String[] getPdf(String fileName){
 		//return pdfUtil.getTextOfPdf(fileName);
 		return pdfUtil.getFileStr(fileName);
 	}
 
-	public int getImageCount(HttpServletRequest req){
+	public ImageResponse getImageCount(HttpServletRequest req){
 		String device = commonUtil.isDevice(req);
 		log.info("####################### device : "+device);
 
@@ -36,7 +40,15 @@ public class MainService {
 		log.info("####################### device2 : "+device2);
 
 		//해당 폴더에 이미지 갯수를 구하는 로직
-		String imagePath = IMG_DIR.concat(device2);
+		String imagePath = "";
+		if("local".equals(PROFILE)){
+			imagePath = "src/main/resources/static";
+		}
+		else{
+			imagePath = "";
+		}
+		imagePath = imagePath.concat(IMG_DIR).concat(device2);
+
 		File dir = new File(imagePath);
 		String[] extensions = new String[]{"jpg", "jpeg", "png", "gif"};
 		int imageCount = 0;
@@ -51,6 +63,12 @@ public class MainService {
 					.count();
 		}
 
-		return imageCount;
+		//화면에서 보여줄 이미지 경로
+		imagePath = imagePath.concat("/").concat(device2).concat("_");
+		ImageResponse imageResponse = new ImageResponse();
+		imageResponse.setImageCount(imageCount);
+		imageResponse.setImagePath(imagePath);
+
+		return imageResponse;
 	}
 }
