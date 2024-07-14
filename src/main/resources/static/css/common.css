@@ -1,7 +1,7 @@
 /*** 공통 적용 css ***/
 body {
     width: 100vw;
-    height: auto;
+    height: 100dvh;
     margin: 0;
     font-family: "Noto Sans KR", sans-serif;
     font-optical-sizing: auto;
