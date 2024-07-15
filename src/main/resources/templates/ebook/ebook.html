@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <!-- 아이콘 관련 -->
+    <link class="material-symbols-outlined" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- 제이쿼리 설정 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
             integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
@@ -155,9 +157,11 @@
             width: 100%;
             height: 100%;
         }
+
         #book-m .turn-page{
             background-color: #FFF;
         }
+
         #book-m .cover{
             background: saddlebrown;
             width: 100%;
@@ -176,18 +180,34 @@
         #controls-m {
             display: block;
             width: 100%;
-            height: fit-content;
+            height: 100%;
             text-align: center;
             font-size: 14px;
             z-index: 9999999;
+        }
+
+        .data {
+            display: block;
+            width: 100%;
+            height: calc(100% - 200px);
+        }
+
+        .toc-icon {
+            display: block;
+            width: 100%;
+            height: 24px;
+        }
+
+        .toc {
             position: relative;
+            left: 0;
             top: 0;
-            background-color: #ffffff;
         }
 
         .page-navi {
-            width: fit-content;
-            margin: 0 auto;
+            width: 100%;
+            height: 100px;
+            /*margin: 0 auto;*/
         }
 
         .number-pages {
@@ -211,6 +231,72 @@
             border: none;
         }
 
+
+        .toc {
+            cursor: pointer;
+        }
+
+
+        .toc-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 10px 0;
+            background-color: #ffffff;
+            z-index: 9999999999999;
+            position: fixed;
+            bottom:0;
+            left: 0;
+            /* 서서히 나타나는 효과 */
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.5s;
+        }
+
+        .toc-container.active {
+            /* 서서히 나타나는 효과 */
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #toc-action-sheet {
+            width: 100%;
+            max-height: 100vh;
+            /* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+            position: relative;
+            bottom: -100vh;
+            transition: 0.5s;
+        }
+
+        .toc-container.active #toc-action-sheet {
+            /* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+            bottom: 0;
+        }
+
+        .toc-container h2 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .toc-container .close-icon {
+            margin: 15px 17px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .toc-li {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            border-top: 1px solid #ccc;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            font-weight: 700;
+        }
+
         /* getMaxTextLength()의 tempContainer와 동일 설정 요망 */
         .page {
             width: 100%;
@@ -225,7 +311,6 @@
             line-height: 1.8; /* 기본 값의 1.5배 */
             border: solid 1px red;
         }
-
     }
 </style>
 <script>
@@ -411,7 +496,18 @@
             if(contentsOfPage[page-1]){
                 console.log('#page-'+page+'에'+(page-1)+'번째 글 넣기 ');
                 console.log(contentsOfPage[page - 1].length);
-                element.html(contentsOfPage[page - 1]);
+                element.html('<div class="data">' + contentsOfPage[page - 1] + '</div>');
+
+                //페이지 컨트롤러 삽입
+                let controller = '    <div id="controls-m">\n' +
+                    '        <div class="page-navi">\n' +
+                    '            <label for="page-number"></label> <input type="text" id="page-number" value="'+page+'">/<span class="number-pages">'+numberOfPages+'</span>\n' +
+                    '        </div>\n' +
+                    '        <div class="toc-icon">\n' +
+                    '            <a class="toc" onclick="openToc()"><span class="material-symbols-outlined" style="font-size:24px;">list_alt</span></a>\n' +
+                    '        </div>\n' +
+                    '    </div>';
+                element.append(controller);
             }
             else{
                 console.log(`${page}내용 없음.`)
@@ -490,12 +586,13 @@
                 },
                 //페이지가 출력된 후 실행
                 turned: function(e, page) {
-                    $('#page-number').val(page);
+                    //$('#page-number').val(page);
+                    //$('.number-pages').html(numberOfPages); //전체 페이지수 출력
                 }
             }
         });
 
-        $('.number-pages').html(numberOfPages); //전체 페이지수 출력
+
 
         $(window).bind('keydown', function(e){
             if (e.keyCode===37) {
@@ -536,6 +633,14 @@
             }
         });
     }
+
+    function openToc() {
+        $('.toc-container').addClass('active');
+    }
+
+    function closeToc() {
+        $('.toc-container').removeClass('active');
+    }
 </script>
 <body>
 <!-- 데스크톱, 노트북, 태블릿 영역 -->
@@ -558,9 +663,29 @@
        <!-- <div class="cover"><h1>Title(m)</h1></div>-->
        <!--<div class="cover"><img src="/img/contents/1.jpg" alt="일러스트"></div>-->
     </div>
+    <!--
     <div id="controls-m">
         <div class="page-navi">
             <label for="page-number"></label> <input type="text" id="page-number">/<span class="number-pages"></span>
+        </div>
+        <div class="toc-icon">
+            <a class="toc" onclick="openToc()"><span class="material-symbols-outlined" style="font-size:24px;">list_alt</span></a>
+        </div>
+    </div>
+    -->
+
+    <div class="toc-container">
+        <div id="toc-action-sheet">
+            <div class="close-icon" onclick="closeToc()"><span class="material-symbols-outlined">close</span></div>
+            <h2>목차</h2>
+            <ul id="toc">
+                <li class="toc-li">일러스트<span>1p</span></li>
+                <li class="toc-li">처음으로</li>
+                <li class="toc-li">크레딧</li>
+                <li class="toc-li">본문</li>
+                <li class="toc-li">저자 소개</li>
+                <li class="toc-li">공연 정보</li>
+            </ul>
         </div>
     </div>
 </div>
