@@ -16,7 +16,7 @@ public class MainController {
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String mainPage(HttpServletRequest req, Model model){
 
-        model.addAttribute("imageCount", mainService.getImageCount(req));
+        model.addAttribute("ebookImageInfo", mainService.getEbookImageInfo(req));
         return "ebook/ebook_copy2";
     }
 

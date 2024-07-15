@@ -32,7 +32,7 @@ public class MainService {
 		return pdfUtil.getFileStr(fileName);
 	}
 
-	public ImageResponse getImageCount(HttpServletRequest req){
+	public ImageResponse getEbookImageInfo(HttpServletRequest req){
 		String device = commonUtil.isDevice(req);
 		log.info("####################### device : "+device);
 
@@ -64,7 +64,7 @@ public class MainService {
 		}
 
 		//화면에서 보여줄 이미지 경로
-		imagePath = imagePath.concat("/").concat(device2).concat("_");
+		imagePath = IMG_DIR.concat(device2).concat("/").concat(device2).concat("_");
 		ImageResponse imageResponse = new ImageResponse();
 		imageResponse.setImageCount(imageCount);
 		imageResponse.setImagePath(imagePath);
