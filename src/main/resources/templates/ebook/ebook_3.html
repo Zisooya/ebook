@@ -172,171 +172,172 @@
         }
 
         /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
-    (body):-webkit-scrollbar {
-        /*display: none;*/
+		(body):-webkit-scrollbar {
+			/*display: none;*/
+		}
+
+		#mobile-wrap {
+			width: 100vw;
+			height: calc((100vw * 1.414) + 50px); /* 50px은 #control-m 영역 */
+			/* 수직 가운데 정렬 */
+			position: absolute;
+			top: 50%;
+			transform: translate(0, -50%);
+
+			box-sizing: border-box;
+
+			/*position: fixed;	!* 스크롤 고정 *!*/
+			/*overflow: hidden;	!* 스크롤 고정 *!*/
+		}
+
+		#book-m {
+			width: 100%;
+			height: 100%;
+		}
+
+		#book-m .turn-page {
+			background-color: #FFF;
+		}
+
+		#book-m .cover {
+			background: saddlebrown;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+
+		#book-m .cover h1 {
+			color: white;
+			text-align: center;
+			font-size: 36px;
+			line-height: 300px;
+			margin: 0;
+		}
+
+		#controls-m {
+			display: flex;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			font-size: 14px;
+			box-sizing: border-box;
+			background-color: pink;
+		}
+
+		img[id^="data_"] {
+			display: block;
+			width: 100%;
+			height: calc(100% - 50px); /* 50px은 #control-m 영역 */
+			box-sizing: border-box;
+			border: 1px solid blue;
+		}
+
+		.toc-icon {
+			display: block;
+			width: 100px;
+			height: 100%;
+			background-color: coral;
+			z-index: 99999999;
+			cursor: pointer;
+		}
+
+		.page-navi {
+			width: 100%;
+			height: 100%;
+		}
+
+		.number-pages {
+			display: inline-block;
+			text-align: left;
+			width: 40px;
+			height: fit-content;
+			padding: 0 5px;
+			box-sizing: border-box;
+			color: #999999;
+		}
+
+		#page-number {
+			display: inline-block;
+			text-align: right;
+			width: 40px;
+			height: fit-content;
+			padding: 0 5px;
+			box-sizing: border-box;
+			background: transparent;
+			border: none;
+		}
+
+		.toc-container {
+			display: flex;
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+			margin: 0;
+			padding: 10px 0;
+			background-color: #ffffff;
+			z-index: 9999999999999;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			/* 서서히 나타나는 효과 */
+			visibility: hidden;
+			opacity: 0;
+			transition: 0.5s;
+		}
+
+		.toc-container.active {
+			/* 서서히 나타나는 효과 */
+			visibility: visible;
+			opacity: 1;
+		}
+
+		#toc-action-sheet {
+			width: 100%;
+			max-height: 100vh;
+			/* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+			position: relative;
+			bottom: -100vh;
+			transition: 0.5s;
+		}
+
+		.toc-container.active #toc-action-sheet {
+			/* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+			bottom: 0;
+		}
+
+		.toc-container h2 {
+			margin: 0;
+			text-align: center;
+		}
+
+		.toc-container .close-icon {
+			margin: 15px 17px;
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+
+		.toc-li {
+			display: flex;
+			justify-content: space-between;
+			width: 100%;
+			border-top: 1px solid #ccc;
+			padding: 10px 20px;
+			box-sizing: border-box;
+			font-weight: 700;
+		}
+
+		/* getMaxTextLength()의 tempContainer와 동일 설정 요망 */
+		.page {
+			width: 100%;
+			height: 100%; /* 높이를 100%로 설정 */
+			overflow: hidden; /* 오버플로우를 감추기 위한 설정 */
+			box-sizing: border-box; /* 패딩과 보더를 포함한 크기 설정 */
+			border: solid 1px red;
+		}
     }
 
-    }
 
-    #mobile-wrap {
-        width: 100vw;
-        height: calc((100vw * 1.414) + 50px); /* 50px은 #control-m 영역 */
-        /* 수직 가운데 정렬 */
-        position: absolute;
-        top: 50%;
-        transform: translate(0, -50%);
-
-        box-sizing: border-box;
-
-        /*position: fixed;	!* 스크롤 고정 *!*/
-        /*overflow: hidden;	!* 스크롤 고정 *!*/
-    }
-
-    #book-m {
-        width: 100%;
-        height: 100%;
-    }
-
-    #book-m .turn-page {
-        background-color: #FFF;
-    }
-
-    #book-m .cover {
-        background: saddlebrown;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
-
-    #book-m .cover h1 {
-        color: white;
-        text-align: center;
-        font-size: 36px;
-        line-height: 300px;
-        margin: 0;
-    }
-
-    #controls-m {
-        display: flex;
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        font-size: 14px;
-        box-sizing: border-box;
-        background-color: pink;
-    }
-
-    .data {
-        display: block;
-        width: 100%;
-        height: calc(100% - 50px); /* 50px은 #control-m 영역 */
-        box-sizing: border-box;
-        border: 1px solid blue;
-    }
-
-    .toc-icon {
-        display: block;
-        width: 100px;
-        height: 100%;
-        background-color: coral;
-        z-index: 99999999;
-        cursor: pointer;
-    }
-
-    .page-navi {
-        width: 100%;
-        height: 100%;
-    }
-
-    .number-pages {
-        display: inline-block;
-        text-align: left;
-        width: 40px;
-        height: fit-content;
-        padding: 0 5px;
-        box-sizing: border-box;
-        color: #999999;
-    }
-
-    #page-number {
-        display: inline-block;
-        text-align: right;
-        width: 40px;
-        height: fit-content;
-        padding: 0 5px;
-        box-sizing: border-box;
-        background: transparent;
-        border: none;
-    }
-
-    .toc-container {
-        display: flex;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-        margin: 0;
-        padding: 10px 0;
-        background-color: #ffffff;
-        z-index: 9999999999999;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        /* 서서히 나타나는 효과 */
-        visibility: hidden;
-        opacity: 0;
-        transition: 0.5s;
-    }
-
-    .toc-container.active {
-        /* 서서히 나타나는 효과 */
-        visibility: visible;
-        opacity: 1;
-    }
-
-    #toc-action-sheet {
-        width: 100%;
-        max-height: 100vh;
-        /* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
-        position: relative;
-        bottom: -100vh;
-        transition: 0.5s;
-    }
-
-    .toc-container.active #toc-action-sheet {
-        /* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
-        bottom: 0;
-    }
-
-    .toc-container h2 {
-        margin: 0;
-        text-align: center;
-    }
-
-    .toc-container .close-icon {
-        margin: 15px 17px;
-        position: absolute;
-        top: 0;
-        right: 0;
-    }
-
-    .toc-li {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        border-top: 1px solid #ccc;
-        padding: 10px 20px;
-        box-sizing: border-box;
-        font-weight: 700;
-    }
-
-    /* getMaxTextLength()의 tempContainer와 동일 설정 요망 */
-    .page {
-        width: 100%;
-        height: 100%; /* 높이를 100%로 설정 */
-        overflow: hidden; /* 오버플로우를 감추기 위한 설정 */
-        box-sizing: border-box; /* 패딩과 보더를 포함한 크기 설정 */
-        border: solid 1px red;
-    }
 
 </style>
 <script th:inline="javascript">
@@ -399,11 +400,9 @@
             //page에 element 요소를 추가
             book.turn('addPage', element, page);
 
-            //데이터가 서버에서 오고 있고 요청에 1초가 걸린다고 가정
-            setTimeout(function () {
                 //element.html('<div class="data"><img src="/img/ebook_image/D-'+page+'.jpg"></div>');
                 //element.html('<img src='+page+'"/img/ebook_desk/D-.jpg">');
-                element.html('<img class="data"  onclick="turnBook(this)" src="/img/ebook_mobile/ebook_mobile_페이지_' + page + '.png">');
+                element.html('<img id="data_'+page+'" src="/img/ebook_mobile/ebook_mobile_페이지_' + page + '.png">');
 
                 //페이지 컨트롤러 삽입
                 let controller = '    <div id="controls-m">\n' +
@@ -415,11 +414,6 @@
                     '        </div>\n' +
                     '    </div>';
                 element.append(controller);
-
-
-            }, 1000);
-
-
         }
     }
 
@@ -478,6 +472,8 @@
         //책 생성 및 출력
         $('#book-m').turn({
             display: 'single',
+            duration: 400,  //페이지 전환 효과 0.4초
+            elevation: 50,  //페이지 쌓임 효과
             acceleration: true, //하드웨어 가속 모드를 설정
             pages: numberOfPages,   //전체 페이지 수
             gradients: true,  //그라데이션 모드 설정
@@ -494,33 +490,92 @@
                 },
                 //페이지가 출력된 후 실행
                 turned: function (e, page) {
-                    $('#page-number').val(page);
+                    $('#page-number').val(page)
+                    //페이지 연속 넘김시 정확하지 않아 현재 페이지 세팅
+                    let currentPage = $('#book-m').turn('page');
+                    //책 터치시 페이지 넘김 이벤트
+                    $('#data_' + page).bind('touchstart', function (e) {
+                        console.log('Event triggered:', e.type);
 
+                        e.stopPropagation(); //상위 요소 이벤트 전파 방지
+                        e.preventDefault(); //브라우저의 기본 동작을 실행 방지
+
+                        //터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
+                        //getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
+                        let offset = e.target.getBoundingClientRect();
+                        let offsetX = e.touches[0].clientX - offset.x;
+
+                        let half = $(this).width()/2;
+
+                        //책의 왼쪽 클릭시 이전 페이지 이동
+                        if(offsetX < half) {
+                            //$('#book-m').turn('page', currentPage-1);
+                            $('#book-m').turn('previous');
+                        }
+                        //책의 오른쪽 클릭시 다음 페이지 이동
+                        else {
+                            //$('#book-m').turn('page', currentPage+1);
+                            $('#book-m').turn('next', {display: 'single'});
+                            //$('#book-m').turn('page', currentPage+1, { duration: 500});
+                            console.log(currentPage+1 + '로 이동');
+                        }
+                    });
                 }
             }
         });
-        alert($('img[class="data"]').length);
-        //책 클릭시 좌우 페이지 넘김 이벤트
-        let data = document.getElementsByClassName("data");
-        alert(data.length);
-        for (let i = 0; i < data.length; i++) {
-            data[i].addEventListener("touchstart", function () {
-                alert('ssss');
-            });
-        }
-
 
         $('.number-pages').html(numberOfPages); //전체 페이지수 출력
 
+        //책 터치시 페이지 넘김 이벤트
+/*
+        for (let i = 1; i < numberOfPages; i++) {   //페이지마다 반복
+            $('#data_' + i).bind('touchstart', function (e) {
+                //터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
+                //getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
+                const offset = e.target.getBoundingClientRect();
+                const offsetX = e.touches[0].clientX - offset.x;
+
+                let half = $(this).width()/2;
+
+                //책의 왼쪽 클릭시 이전 페이지 이동
+                if(offsetX < half) {
+                    $('#book-m').turn('previous');
+                }
+                //책의 오른쪽 클릭시 다음 페이지 이동
+                else {
+                    $('#book-m').turn('next');
+                }
+            });
+        }
+ */
+/*
+        // 책 클릭시 페이지 넘김 이벤트
+        $('#book-m').click(function(e) {
+            let half = $(this).width()/2;
+
+            //책의 왼쪽 클릭시 이전 페이지 이동
+            if(e.offsetX < half) {
+                $('#book-m').turn('previous');
+            }
+            //책의 오른쪽 클릭시 다음 페이지 이동
+            else {
+                $('#book-m').turn('next');
+            }
+        });
+*/
+
+        //왼쪽, 오른쪽 방향키 다운시 페이지 넘김 이벤트
+        /*
         $(window).bind('keydown', function (e) {
             if (e.keyCode === 37) {
                 $('#book-m').turn('previous');
             } else if (e.keyCode === 39) {
                 $('#book-m').turn('next');
             }
-
         });
-
+*/
+        //페이지 번호 입력시 해당 페이지로 이동 이벤트
+        /*
         $('#page-number').keydown(function (e) {
             inputPageNum = ($(this).val());
 
@@ -535,24 +590,7 @@
                 }
             }
         });
-
-        // 책 클릭시 이벤트
-        /*
-        $('#book-m .data').click(function(e) {
-            let half = $(this).width()/2;
-
-            //책의 왼쪽 클릭시 이전 페이지 이동
-            if(e.offsetX < half) {
-                $('#book-m').turn('previous');
-            }
-            //책의 오른쪽 클릭시 다음 페이지 이동
-            else {
-                $('#book-m').turn('next');
-            }
-        });
         */
-
-
     }
 
     //목차 아이콘 클릭 or 터치시 이벤트
@@ -564,28 +602,6 @@
     function closeToc() {
         $('.toc-container').removeClass('active');
     }
-
-    // 책 클릭시 이벤트
-    function turnBook(element) {
-        //let obj = $('.'+element.className);
-        //alert(obj.width());
-        console.log(element);
-        /*
-        $('#book-m .data').click(function(e) {
-            let half = $(this).width()/2;
-
-            //책의 왼쪽 클릭시 이전 페이지 이동
-            if(e.offsetX < half) {
-                $('#book-m').turn('previous');
-            }
-            //책의 오른쪽 클릭시 다음 페이지 이동
-            else {
-                $('#book-m').turn('next');
-            }
-        });
-        */
-    }
-
 
 </script>
 <body>
@@ -611,13 +627,6 @@
         <!-- <div class="cover"><h1>Title(m)</h1></div>-->
         <!--<div class="cover"><img src="/img/contents/1.jpg" alt="일러스트"></div>-->
     </div>
-    <!--
-    <div id="controls-m">
-        <div class="page-navi">
-            <label for="page-number"></label> <input type="text" id="page-number">/<span class="number-pages"></span>
-        </div>
-    </div>
-    -->
 
     <div class="toc-container">
         <div id="toc-action-sheet">
@@ -637,13 +646,5 @@
 <form id="searchForm">
     <input type="hidden" name="fileName" id="fileName" value="e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록">
 </form>
-<script>
-    //로딩 완료 되었을 때
-    $(window).on('load', function () {
-        //터치 이벤트 등록 함수 호출
-
-
-    });
-</script>
 </body>
 </html>
