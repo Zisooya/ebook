@@ -179,12 +179,12 @@
 		#mobile-wrap {
 			width: 100vw;
 			height: calc((100vw * 1.414) + 50px); /* 50px은 #control-m 영역 */
-			/* 수직 가운데 정렬 */
+            box-sizing: border-box;
+
+            /* 수직 가운데 정렬 */
 			position: absolute;
 			top: 50%;
 			transform: translate(0, -50%);
-
-			box-sizing: border-box;
 
 			/*position: fixed;	!* 스크롤 고정 *!*/
 			/*overflow: hidden;	!* 스크롤 고정 *!*/
@@ -256,7 +256,7 @@
 			color: #999999;
 		}
 
-		#page-number {
+		.page-number {
 			display: inline-block;
 			text-align: right;
 			width: 40px;
@@ -407,7 +407,7 @@
                 //페이지 컨트롤러 삽입
                 let controller = '    <div id="controls-m">\n' +
                     '        <div class="page-navi">\n' +
-                    '            <label for="page-number"></label> <input type="text" id="page-number" value="' + page + '">/<span class="number-pages">' + numberOfPages + '</span>\n' +
+                    '            <label for="page-number"></label> <input type="text" class="page-number" value="' + page + '">/<span class="number-pages">' + numberOfPages + '</span>\n' +
                     '        </div>\n' +
                     '        <div class="toc-icon" ontouchstart="openToc()">\n' +
                     '            <span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>\n' +
@@ -492,7 +492,7 @@
                 },
                 //페이지가 출력된 후 실행
                 turned: function (e, page) {
-                    $('#page-number').val(page);
+                    $('.page-number').val(page);
 
                     //책 터치시 페이지 넘김 이벤트
                     $('#data_' + page).bind('touchstart', function (e) {
