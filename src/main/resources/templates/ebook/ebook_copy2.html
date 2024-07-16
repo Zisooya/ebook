@@ -8,6 +8,9 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+	<!-- 아이콘 관련 -->
+	<link class="material-symbols-outlined" rel="stylesheet"
+		  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 	<!-- 제이쿼리 설정 -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
 			integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
@@ -72,48 +75,48 @@
         z-index: 88888;
     }
 
-    #controls{
+	#controls{
 		position: relative;
 		width:100% !important;
 		height: 30px;
 		text-align:center;
 		margin:20px 0px;
-		top: -12%;
-    }
+		top: -9%;
+	}
 
-    /*#book .odd{
-        background-image:-webkit-linear-gradient(left, #FFF 95%, #ddd 100%);
-        background-image:-moz-linear-gradient(left, #FFF 95%, #ddd 100%);
-        background-image:-o-linear-gradient(left, #FFF 95%, #ddd 100%);
-        background-image:-ms-linear-gradient(left, #FFF 95%, #ddd 100%);
-    }
+	/*#book .odd{
+		background-image:-webkit-linear-gradient(left, #FFF 95%, #ddd 100%);
+		background-image:-moz-linear-gradient(left, #FFF 95%, #ddd 100%);
+		background-image:-o-linear-gradient(left, #FFF 95%, #ddd 100%);
+		background-image:-ms-linear-gradient(left, #FFF 95%, #ddd 100%);
+	}
 
-    #book .even{
-        background-image:-webkit-linear-gradient(right, #FFF 95%, #ddd 100%);
-        background-image:-moz-linear-gradient(right, #FFF 95%, #ddd 100%);
-        background-image:-o-linear-gradient(right, #FFF 95%, #ddd 100%);
-        background-image:-ms-linear-gradient(right, #FFF 95%, #ddd 100%);
-    }*/
+	#book .even{
+		background-image:-webkit-linear-gradient(right, #FFF 95%, #ddd 100%);
+		background-image:-moz-linear-gradient(right, #FFF 95%, #ddd 100%);
+		background-image:-o-linear-gradient(right, #FFF 95%, #ddd 100%);
+		background-image:-ms-linear-gradient(right, #FFF 95%, #ddd 100%);
+	}*/
 
-    .page-navi-left {
+	.page-navi-left {
 		display: inline-block;
 		position: relative;
 		width: fit-content;
 		height: fit-content;
 		right: 22%;
 		z-index: 99999;
-    }
+	}
 
-    .page-navi-right {
+	.page-navi-right {
 		display: inline-block;
 		position: relative;
 		width: fit-content;
 		height: fit-content;
 		left: 20%;
 		z-index: 99999;
-    }
+	}
 
-    #left-page-number {
+	#left-page-number {
 		text-align: right;
 		width: 40px;
 		height: fit-content;
@@ -121,9 +124,9 @@
 		background: transparent;
 		border: none;
 		font-size: 14px;
-    }
+	}
 
-    #right-page-number {
+	#right-page-number {
 		text-align: right;
 		width: 40px;
 		height: fit-content;
@@ -131,11 +134,83 @@
 		background: transparent;
 		border: none;
 		font-size: 14px;
+	}
+
+    #page-number {
+        display: inline-block;
+        text-align: right;
+        width: 40px;
+        height: fit-content;
+        padding: 0 5px;
+        box-sizing: border-box;
+        background: transparent;
+        border: none;
     }
 
-    #book img {
+	#book img {
 		width: 100%;
 	}
+
+    .toc-container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 10px 0;
+        background-color: #ffffff;
+        z-index: 9999999999999;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        /* 서서히 나타나는 효과 */
+        visibility: hidden;
+        opacity: 0;
+        transition: 0.5s;
+    }
+
+    .toc-container.active {
+        /* 서서히 나타나는 효과 */
+        visibility: visible;
+        opacity: 1;
+    }
+
+    #toc-action-sheet {
+        width: 100%;
+        max-height: 100vh;
+        /* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+        position: relative;
+        bottom: -100vh;
+        transition: 0.5s;
+    }
+
+    .toc-container.active #toc-action-sheet {
+        /* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+        bottom: 0;
+    }
+
+    .toc-container h2 {
+        margin: 0;
+        text-align: center;
+    }
+
+    .toc-container .close-icon {
+        margin: 15px 17px;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .toc-li {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        border-top: 1px solid #ccc;
+        padding: 10px 20px;
+        box-sizing: border-box;
+        font-weight: 700;
+    }
+
     /* 노트북 & 테블릿 가로 (해상도 1024px ~ 1279px)*/
     @media all and (min-width:1024px) and (max-width:1279px) {
         body {
@@ -253,6 +328,24 @@
 <script th:inline="javascript">
 	$(function(){
 		printEbook();
+
+		$('.odd').on('click', function(e) {
+			console.log(e);
+			e.stopPropagation(); //상위 요소 이벤트 전파 방지
+			e.preventDefault(); //브라우저의 기본 동작을 실행 방지
+			//alert("half : " + $(this).width()/2+", e.offsetX : "+e.offsetX*2);
+			//책의 왼쪽 클릭시 이전 페이지 이동
+			$('#book').turn('previous');
+		});
+
+		$('.even').on('click', function(e) {
+			console.log(e);
+			e.stopPropagation(); //상위 요소 이벤트 전파 방지
+			e.preventDefault(); //브라우저의 기본 동작을 실행 방지
+			//alert("half : " + $(this).width()/2+", e.offsetX : "+e.offsetX*2);
+			//책의 오른쪽 클릭시 다음 페이지 이동
+			$('#book').turn('next');
+		});
 	});
 
 	function fn_callback(callbackId, resData) {
@@ -307,8 +400,20 @@
 			//데이터가 서버에서 오고 있고 요청에 1초가 걸린다고 가정
 			setTimeout(function(){
 				//element.html('<div class="data"><img src="/img/ebook_image/D-'+page+'.jpg"></div>');
-				element.html('<img src="'+imagePath+page+'.png">');
-			}, 1000);
+				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
+
+				//페이지 컨트롤러 삽입
+				let controller = '' +
+					'	<div id="controls">\n' +
+					'		<div class="page-navi">\n' +
+					'			<label for="page-number"></label> <input type="text" id="page-number" value="' + page + '">/<span class="number-pages">' + numberOfPages + '</span>\n' +
+					'		</div>\n' +
+					'		<div class="toc-icon" onclick="openToc()">\n' +
+					'			<span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>\n' +
+					'		</div>\n' +
+					'	</div>';
+				element.append(controller);
+				}, 1000);
 		}
 	}
 
@@ -337,9 +442,35 @@
 				},
 				//페이지가 출력된 후 실행
 				turned: function(e, page) {
-					$('#page-number').val(page);
-					$('#left-page-number').val((page-1));
-					$('#right-page-number').val(page);
+					if((page%2===0)){
+						$('#left-page-number').val((page));
+						$('#right-page-number').val(page+1);
+					}
+					else{
+						$('#left-page-number').val((page-1));
+						$('#right-page-number').val(page);
+					}
+
+					//책 터치시 페이지 넘김 이벤트
+					/*$('.odd').bind('click', function (e) {
+						console.log('Event triggered:', e.type);
+
+						e.stopPropagation(); //상위 요소 이벤트 전파 방지
+						e.preventDefault(); //브라우저의 기본 동작을 실행 방지
+
+						//책의 왼쪽 클릭시 이전 페이지 이동
+						$('#book').turn('previous');
+					});
+
+					$('.even').bind('click', function (e) {
+						console.log('Event triggered:', e.type);
+
+						e.stopPropagation(); //상위 요소 이벤트 전파 방지
+						e.preventDefault(); //브라우저의 기본 동작을 실행 방지
+
+						//책의 오른쪽 클릭시 다음 페이지 이동
+						$('#book').turn('next');
+					});*/
 				}
 			}
 		});
@@ -429,6 +560,16 @@
 			}
 		});
 	}
+
+	//목차 아이콘 클릭 or 터치시 이벤트
+	function openToc() {
+		$('.toc-container').addClass('active');
+	}
+
+	//목차리스트의 닫기 아이콘 클릭 or 터치시 이벤트
+	function closeToc() {
+		$('.toc-container').removeClass('active');
+	}
 </script>
 <body>
 <!-- 데스크톱, 노트북, 태블릿 영역 -->
@@ -436,12 +577,18 @@
 	<div id="book">
 		<!--<div class="cover"><h1>The Bible</h1></div>-->
 	</div>
-	<div id="controls">
-		<div class="page-navi-left">
-			<label for="left-page-number"></label> <input type="text" size="3" id="left-page-number">/<span class="number-pages"></span>
-		</div>
-		<div class="page-navi-right">
-			<label for="right-page-number"></label> <input type="text" size="3" id="right-page-number">/<span class="number-pages"></span>
+	<div class="toc-container">
+		<div id="toc-action-sheet">
+			<div class="close-icon" onclick="closeToc()"><span class="material-symbols-outlined">close</span></div>
+			<h2>목차</h2>
+			<ul id="toc">
+				<li class="toc-li">일러스트<span>1p</span></li>
+				<li class="toc-li">처음으로</li>
+				<li class="toc-li">크레딧</li>
+				<li class="toc-li">본문</li>
+				<li class="toc-li">저자 소개</li>
+				<li class="toc-li">공연 정보</li>
+			</ul>
 		</div>
 	</div>
 </div>
