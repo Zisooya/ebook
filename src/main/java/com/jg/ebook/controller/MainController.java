@@ -17,7 +17,7 @@ public class MainController {
     public String mainPage(HttpServletRequest req, Model model){
 
         model.addAttribute("ebookImageInfo", mainService.getEbookImageInfo(req));
-        return "ebook/ebook_copy2";
+        return "ebook/ebook_3";
     }
 
     @GetMapping("/epub")
