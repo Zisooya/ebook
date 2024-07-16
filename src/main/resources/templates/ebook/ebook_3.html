@@ -371,9 +371,9 @@
         }
     });
 
-    let numberOfPages = /*[[${imageCount}]]*/ 0;
-
-    console.log(numberOfPages);
+    let ebookImageInfo = /*[[${ebookImageInfo}]]*/ 0;
+    let numberOfPages = ebookImageInfo.imageCount;
+    let imagePath = ebookImageInfo.imagePath;
 
     // 모바일인지 체크하는 함수
     function isMobile() {
@@ -402,8 +402,8 @@
 
                 //element.html('<div class="data"><img src="/img/ebook_image/D-'+page+'.jpg"></div>');
                 //element.html('<img src='+page+'"/img/ebook_desk/D-.jpg">');
-                element.html('<img id="data_'+page+'" src="/img/ebook_mobile/ebook_mobile_페이지_' + page + '.png">');
-
+                //element.html('<img id="data_'+page+'" src=' + page + '"/img/ebook/ebook_mobile_페이지_.png">');
+                element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
                 //페이지 컨트롤러 삽입
                 let controller = '    <div id="controls-m">\n' +
                     '        <div class="page-navi">\n' +
@@ -469,6 +469,8 @@
         $('#mobile-wrap').css('display', 'block');
         $('.wrap').css('display', 'none');
 
+        let isTurning = false; // 상태 변수 추가 (2페이지 씩 넘어가는 오류 방지하기 위함)
+
         //책 생성 및 출력
         $('#book-m').turn({
             display: 'single',
@@ -490,15 +492,20 @@
                 },
                 //페이지가 출력된 후 실행
                 turned: function (e, page) {
-                    $('#page-number').val(page)
-                    //페이지 연속 넘김시 정확하지 않아 현재 페이지 세팅
-                    let currentPage = $('#book-m').turn('page');
+                    $('#page-number').val(page);
+
                     //책 터치시 페이지 넘김 이벤트
                     $('#data_' + page).bind('touchstart', function (e) {
                         console.log('Event triggered:', e.type);
 
-                        e.stopPropagation(); //상위 요소 이벤트 전파 방지
-                        e.preventDefault(); //브라우저의 기본 동작을 실행 방지
+                        if (isTurning) {
+                            return; // 이미 페이지가 넘어가고 있는 경우 이벤트 무시
+                        }
+
+                        isTurning = true; // 페이지 전환 시작
+
+                        //e.stopPropagation(); //상위 요소 이벤트 전파 방지
+                        //e.preventDefault(); //브라우저의 기본 동작을 실행 방지
 
                         //터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
                         //getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
@@ -509,16 +516,16 @@
 
                         //책의 왼쪽 클릭시 이전 페이지 이동
                         if(offsetX < half) {
-                            //$('#book-m').turn('page', currentPage-1);
                             $('#book-m').turn('previous');
                         }
                         //책의 오른쪽 클릭시 다음 페이지 이동
                         else {
-                            //$('#book-m').turn('page', currentPage+1);
-                            $('#book-m').turn('next', {display: 'single'});
-                            //$('#book-m').turn('page', currentPage+1, { duration: 500});
-                            console.log(currentPage+1 + '로 이동');
+                            $('#book-m').turn('next');
                         }
+
+                        setTimeout(function () {
+                            isTurning = false; // 일정 시간이 지난 후 상태 변수 리셋
+                        }, 500); // 0.5초 후에 isTurning을 false로 설정
                     });
                 }
             }
