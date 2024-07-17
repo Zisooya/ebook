@@ -14,16 +14,25 @@ public class MainController {
     private final MainService mainService;
 
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String mainPage(HttpServletRequest req, Model model){
-
-        model.addAttribute("ebookImageInfo", mainService.getEbookImageInfo(req));
-        return "ebook/ebook_3";
+    public String mainPage(Model model){
+        return "main";
     }
 
-    @GetMapping("/epub")
-    public String epubPage(Model model){
+    @PostMapping("/login")
+    @ResponseBody
+    public boolean epubPage(@RequestParam("password") String password){
+        System.out.println("==============================: "+password);
+        boolean isMatch;
 
-        return "ebook/swipe";
+        isMatch = password.equals("1234");
+
+        return isMatch;
+    }
+
+    @GetMapping("/ebook")
+    public String epubPage(HttpServletRequest req, Model model){
+        model.addAttribute("ebookImageInfo", mainService.getEbookImageInfo(req));
+        return "ebook/ebook_3";
     }
 
     @GetMapping("/pdf")
