@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ebook</title>
+    <!-- 폰트 설정 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <!-- 아이콘 관련 -->
+    <link class="material-symbols-outlined" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- 제이쿼리 설정 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+            integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- ebook 관련 라이브러리 -->
+    <script src="/js/lib/turn.min.js"></script>
+    <script src="/js/init.js"></script>
+    <script src="/js/function.js"></script>
+    <!-- css -->
+    <link rel="stylesheet" type="text/css" href="/css/common.css"/>
+</head>
+<style>
+    body {
+        width: 100vw;
+        height: 100vh;
+        background:#ccc;
+        overflow: hidden;
+    }
+
+    .wrap {
+        /*        width: calc((100vh/1.414)*2);
+                height: 100vh;*/
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    #book{
+        display: none;
+        width:100%;
+        height: 100%;
+    }
+
+    #book .turn-page{
+        background-color: #FFF;
+    }
+
+    #book .cover{
+        background:#333;
+    }
+
+    #book .cover h1{
+        color:white;
+        text-align:center;
+        font-size:50px;
+        line-height:500px;
+        margin:0px;
+    }
+
+    #book .loader{
+        background-image:url(/loader.gif);
+        width:24px;
+        height:24px;
+        display:block;
+        position:absolute;
+        top:238px;
+        left:188px;
+    }
+
+    #book .data{
+        text-align:center;
+        font-size:40px;
+        color:#000;
+        line-height:500px;
+        z-index: 88888;
+    }
+
+    #controls{
+        width:800px;
+        text-align:center;
+        margin:20px 0px;
+    }
+
+    /*#book .odd{
+        background-image:-webkit-linear-gradient(left, #FFF 95%, #ddd 100%);
+        background-image:-moz-linear-gradient(left, #FFF 95%, #ddd 100%);
+        background-image:-o-linear-gradient(left, #FFF 95%, #ddd 100%);
+        background-image:-ms-linear-gradient(left, #FFF 95%, #ddd 100%);
+    }
+
+    #book .even{
+        background-image:-webkit-linear-gradient(right, #FFF 95%, #ddd 100%);
+        background-image:-moz-linear-gradient(right, #FFF 95%, #ddd 100%);
+        background-image:-o-linear-gradient(right, #FFF 95%, #ddd 100%);
+        background-image:-ms-linear-gradient(right, #FFF 95%, #ddd 100%);
+    }*/
+
+    .page-navi-left {
+        width: fit-content;
+        height: fit-content;
+        border: 1px solid blue;
+        position: fixed;
+        left: 33%;
+        bottom: 30%;
+        z-index: 99999;
+    }
+
+    .page-navi-right {
+        width: fit-content;
+        height: fit-content;
+        border: 1px solid red;
+        position: fixed;
+        left: 63%;
+        bottom: 30%;
+        z-index: 99999;
+    }
+
+    /* 노트북 & 테블릿 가로 (해상도 1024px ~ 1279px)*/
+    @media all and (min-width:1024px) and (max-width:1279px) {
+        body {
+            background-color: aquamarine;
+        }
+    }
+
+    /* 테블릿 가로 (해상도 768px ~ 1023px)*/
+    /* 아이폰(12Pro) 회전 방향*/
+    @media all and (min-width:768px) and (max-width:1023px) {
+        body {
+            background-color: darkorange;
+        }
+    }
+
+    /* 모바일 가로 & 테블릿 세로 (해상도 480px ~ 767px)*/
+    @media all and (min-width:480px) and (max-width:767px) {
+        body {
+            background-color: pink;
+        }
+    }
+
+    /* 모바일 세로 (해상도 ~ 479px)*/
+    @media all and (max-width:479px) {
+        body {
+            width: 100vw;
+            height: 100%;
+            background-color: gold;
+        }
+
+        #mobile-wrap {
+            width: 100vw;
+            height: calc(100vw*1.414);
+            margin: calc((100vh - (100vw*1.414))/2) auto;
+            box-sizing: border-box;
+        }
+
+        #book-m {
+            width: 100%;
+            height: 100%;
+        }
+
+        #book-m .turn-page{
+            background-color: #FFF;
+        }
+
+        #book-m .cover{
+            background: saddlebrown;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #book-m .cover h1{
+            color:white;
+            text-align:center;
+            font-size:36px;
+            line-height:300px;
+            margin:0;
+        }
+
+        #controls-m {
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 14px;
+            z-index: 9999999;
+        }
+
+        .data {
+            display: block;
+            width: 100%;
+            height: calc(100% - 200px);
+        }
+
+        .toc-icon {
+            display: block;
+            width: 100%;
+            height: 24px;
+        }
+
+        .toc {
+            position: relative;
+            left: 0;
+            top: 0;
+        }
+
+        .page-navi {
+            width: 100%;
+            height: 100px;
+            /*margin: 0 auto;*/
+        }
+
+        .number-pages {
+            display: inline-block;
+            text-align: left;
+            width: 40px;
+            height: fit-content;
+            padding: 0 5px;
+            box-sizing: border-box;
+            color: #999999;
+        }
+
+        #page-number {
+            display: inline-block;
+            text-align: right;
+            width: 40px;
+            height: fit-content;
+            padding: 0 5px;
+            box-sizing: border-box;
+            background: transparent;
+            border: none;
+        }
+
+
+        .toc {
+            cursor: pointer;
+        }
+
+
+        .toc-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 10px 0;
+            background-color: #ffffff;
+            z-index: 9999999999999;
+            position: fixed;
+            bottom:0;
+            left: 0;
+            /* 서서히 나타나는 효과 */
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.5s;
+        }
+
+        .toc-container.active {
+            /* 서서히 나타나는 효과 */
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #toc-action-sheet {
+            width: 100%;
+            max-height: 100vh;
+            /* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+            position: relative;
+            bottom: -100vh;
+            transition: 0.5s;
+        }
+
+        .toc-container.active #toc-action-sheet {
+            /* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+            bottom: 0;
+        }
+
+        .toc-container h2 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .toc-container .close-icon {
+            margin: 15px 17px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .toc-li {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            border-top: 1px solid #ccc;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            font-weight: 700;
+        }
+
+        /* getMaxTextLength()의 tempContainer와 동일 설정 요망 */
+        .page {
+            width: 100%;
+            height: 100%;  /* 높이를 100%로 설정 */
+            overflow: hidden;  /* 오버플로우를 감추기 위한 설정 */
+            padding: 0 20px 5px 20px;
+            box-sizing: border-box;  /* 패딩과 보더를 포함한 크기 설정 */
+            white-space: pre-wrap;  /* 텍스트가 박스를 벗어나면 자동으로 줄바꿈 */
+            word-wrap: break-word;  /* 단어가 컨테이너의 경계를 넘어갈 때 단어 중간에서 줄바꿈 */
+            word-break: break-all;  /* 단어를 강제로 잘라서 줄바꿈 */
+            text-align: justify;
+            line-height: 1.8; /* 기본 값의 1.5배 */
+            border: solid 1px red;
+        }
+    }
+</style>
+<script>
+    let numberOfPages; //전체 페이지 수
+    //let fullText = '111111111111111111111111111111111111111111111여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.222222222222222222222222222222222222여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.333333333333333333333333여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.4444444444444444여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.555555555555555여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.6666666666666666666666여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.77777777777777777777777여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.8888888888888888888888여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.9999999999999999999999999여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.0000000000000000000여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.111111111111111111111/222222222222222222222/333333333333333333333333여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요./444444444444444444여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요./55555555555555555555555555555555555555555555555555555555555555555555여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요./66666666666666666666666666666666666666666666666666666666여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요./7777777777777777777777는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.여기는 길게 쓰면 어떻게 나오는 지 확인할 거예요.';
+    let fullText;
+    let contentsOfPage = [];
+
+    $(function(){
+        //pdf 파일 호출 및 fullText에 초기화
+        cinit_view('/pdf', 'fileName');
+    });
+
+    function fn_callback(callbackId, resData) {
+        //상품 상세 정보 조회
+        if (callbackId === 'pdf') {
+            //페이지별 텍스트 분할
+            splitTextsForPages(resData);
+            console.log('[##### PDF 조회 결과 처리]\n', resData);
+
+        } else{}
+    }
+
+    function printEbook() {
+        //기기별 ebook 출력
+        if (isMobile()){// 모바일일 경우
+            printMobileBook();
+        } else {// 모바일 외
+            printBook();
+        }
+    }
+
+    //주어진 컨테이너 내에 주어진 text를 넣었을 때, overflow 여부를 반환하는 함수
+    function isOverflow(element, text) {
+        element.text(text);
+        return element[0].scrollHeight > element[0].clientHeight;
+    }
+
+    //페이지당 최대 글자 수를 구하는 함수
+    function getMaxTextLength(fullText) {
+        //overflow 여부 체크를 위한 임시 컨테이너 생성(.page의 css와 동일 설정 요망, 가상의 요소이므로 width와 height만 별도 설정.)
+        let tempContainer = $('<div />').css({
+            'visibility': 'hidden',
+            'width': '100vw',
+            'height': 'calc(100vw*1.414)',
+            'overflow': 'hidden',
+            'padding': '0 20px 5px 20px',
+            'box-sizing': 'border-box',
+            'white-space': 'pre-wrap',
+            'word-wrap': 'break-word',
+            'word-break': 'break-all',
+            'text-align': 'justify',
+            'line-height': '1.8'
+        }).appendTo('body');
+
+        let start = 0;
+        let end = fullText.length;
+        let maxTextLength = 0;
+
+        //반복문 돌며 overflow 되지 않는 최대 텍스트 길이인 mid를 구함
+        while (start <= end) {
+            let mid = Math.floor((start + end) / 2);
+            let candidateText = fullText.substring(0, mid);
+
+            //넘치면 end를 1 줄여 더 작은 텍스트 길이를 조사
+            if (isOverflow(tempContainer, candidateText)) {
+                end = mid - 1;
+            }
+            //안넘치면 maxTextLength를 담아놓고, start를 mid+1로 설정하여 더 긴 텍스트 길이를 조사
+            else {
+                maxTextLength = mid;
+                start = mid + 1;
+            }
+        }
+
+        let maxCharsInWidth; // 요소 넓이에 대한 최대 문자 수
+        let containerWidth = tempContainer.width();
+        maxCharsInWidth = Math.floor(containerWidth / getCharacterWidth());
+
+        tempContainer.remove();
+
+        return {
+            maxTextLength: maxTextLength,
+            maxCharsInWidth: maxCharsInWidth
+        };
+    }
+
+    // 문자 하나의 넓이를 반환하는 함수 (임의의 문자로 계산)
+    function getCharacterWidth() {
+        let testChar = "a";
+        let tempSpan = $('<span />').text(testChar).appendTo('body');
+        let charWidth = tempSpan.width();
+
+        tempSpan.remove();
+        return charWidth;
+    }
+
+    // 텍스트를 pageTextLength 만큼씩 나누어 저장하는 함수
+    function splitTextsForPages(fullText) {
+        //페이지당 최대 글자 수
+        let maxInfo = getMaxTextLength(fullText[5]);
+        let maxTextLength = maxInfo.maxTextLength;  //페이지당 최대 글자 수
+        let maxCharsInWidth = maxInfo.maxCharsInWidth; //한 줄당 최대 글자 수
+
+        //챕터별(인덱스별)로 넣되 maxTextLength 넘으면 다음 페이지로 넘김
+        for(let i = 0; i<fullText.length; i++){
+            if(i<5) {
+                contentsOfPage.push(fullText[i]);
+            }
+            else {
+                let start = 0;
+                console.log(i+'인덱스 분할중');
+
+                while (start < fullText[i].length) {
+                    let end = start + maxTextLength;
+
+                    //현재 구간의 텍스트 추출
+                    let substring = fullText[i].substring(start, end);
+
+                    //줄바꿈 문자의 개수 계산(없으면 빈 배열 반환)
+                    let lineBreakCount = (substring.match(/\n/g) || []).length;
+
+                    //줄바꿈 문자가 나오면 화면의 한 줄을 차지하는 문자 수만큼 end에 더해줌
+                    if (lineBreakCount > 0) {
+                        //end += lineBreakCount * maxCharsInWidth;
+                        //줄바꿈이 한 줄의 시작 지점에서 발생한 경우(한 줄 전체 줄바꿈)
+
+                        //줄바꿈이 한 줄의 중간에서 발생한 경우
+                    }
+
+                    // 최대 길이를 넘지 않도록 조정
+                    if (end > fullText[i].length) {
+                        end = fullText[i].length;
+                    }
+
+                    contentsOfPage.push(fullText[i].substring(start, end));
+                    console.log(fullText[i].substring(start, end));
+                    start = end;
+                }
+            }
+        }
+
+        console.log('[##### 분할 결과]\n', contentsOfPage);
+
+        //전체 페이지 수 초기화
+        numberOfPages = contentsOfPage.length;
+
+        //ebook에 출력
+        printEbook();
+    }
+
+    $(window).bind('keydown', function(e){
+        if (e.target && e.target.tagName.toLowerCase()!='input'){
+            if (e.keyCode==37)
+                $('#book').turn('previous');
+            else if (e.keyCode==39)
+                $('#book').turn('next');
+        }
+    });
+
+    // 모바일인지 체크하는 함수
+    function isMobile(){
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    //book 요소에 page 추가하는 함수
+    function addPage(page, book) {
+        if (!book.turn('hasPage', page)) { //페이지가 이미 책에 있는지 체크
+            //페이지를 위한 요소
+            let element;
+            //모바일 아닌 경우
+            if(!isMobile()){
+                element = $('<div />', {'class': 'page '+((page%2===0) ? 'odd' : 'even'), 'id': 'page-'+page}).html('<i class="loader"></i>');
+            }
+            //모바일인 경우
+            else {
+                element = $('<div />', {'class': 'page', 'id': 'page-'+page}).html('<i class="loader"></i>');
+            }
+
+            //page에 element 요소를 추가
+            book.turn('addPage', element, page);
+
+            if(contentsOfPage[page-1]){
+                console.log('#page-'+page+'에'+(page-1)+'번째 글 넣기 ');
+                console.log(contentsOfPage[page - 1].length);
+                element.html('<div class="data">' + contentsOfPage[page - 1] + '</div>');
+
+                //페이지 컨트롤러 삽입
+                let controller = '    <div id="controls-m">\n' +
+                    '        <div class="page-navi">\n' +
+                    '            <label for="page-number"></label> <input type="text" id="page-number" value="'+page+'">/<span class="number-pages">'+numberOfPages+'</span>\n' +
+                    '        </div>\n' +
+                    '        <div class="toc-icon">\n' +
+                    '            <a class="toc" onclick="openToc()"><span class="material-symbols-outlined" style="font-size:24px;">list_alt</span></a>\n' +
+                    '        </div>\n' +
+                    '    </div>';
+                element.append(controller);
+            }
+            else{
+                console.log(`${page}내용 없음.`)
+            }
+        }
+    }
+
+    //책 출력하는 함수
+    function printBook(){
+        //모바일 영역 비활성화
+        $('#mobile-wrap').css('display', 'none');
+
+        //책 생성 및 출력
+        $('#book').turn({
+            acceleration: true, //하드웨어 가속 모드를 설정
+            pages: numberOfPages,   //전체 페이지 수
+            //elevation: 50,
+            //gradients: !$.isTouch,  //그라데이션 모드 설정
+            gradients: true,  //그라데이션 모드 설정
+            when: { //turn 이벤트 옵션 정의
+                //페이지가 출력되기 전 실행
+                turning: function(e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+
+                    //메모리 보관에 필요한 책의 페이지 범위를 가져옴
+                    let range = $(this).turn('range', page);
+
+                    //각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
+                    for (page = range[0]; page<=range[1]; page++)
+                        addPage(page, $(this));
+                },
+                //페이지가 출력된 후 실행
+                turned: function(e, page) {
+                    $('#page-number').val(page);
+                    $('#left-page-number').val((page-1));
+                    $('#right-page-number').val(page);
+                }
+            }
+        });
+
+        $('.number-pages').html(numberOfPages); //전체 페이지수 출력
+
+        $('#left-page-number').keydown(function(e){
+            if (e.keyCode===13) {
+                // $('#book').turn('page', $('#left-page-number').val()-1);
+            }
+        });
+
+        $('#right-page-number').keydown(function(e){
+            if (e.keyCode===13) {
+                //  $('#book').turn('page', $('#right-page-number').val());
+            }
+        });
+    }
+
+    function printMobileBook(){
+        //모바일 영역 활성화
+        $('#mobile-wrap').css('display', 'block');
+        $('.wrap').css('display', 'none');
+
+        //책 생성 및 출력
+        $('#book-m').turn({
+            display: 'single',
+            acceleration: true, //하드웨어 가속 모드를 설정
+            pages: numberOfPages,   //전체 페이지 수
+            gradients: true,  //그라데이션 모드 설정
+            when: { //turn 이벤트 옵션 정의
+                //페이지가 출력되기 전 실행
+                turning: function(e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+                    //메모리 보관에 필요한 책의 페이지 범위를 가져옴
+                    let range = $(this).turn('range', page);
+
+                    //각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
+                    for (page = range[0]; page<=range[1]; page++) {
+                        addPage(page, $(this));
+                    }
+                },
+                //페이지가 출력된 후 실행
+                turned: function(e, page) {
+                    //$('#page-number').val(page);
+                    //$('.number-pages').html(numberOfPages); //전체 페이지수 출력
+                }
+            }
+        });
+
+
+
+        $(window).bind('keydown', function(e){
+            if (e.keyCode===37) {
+                $('#book-m').turn('previous');
+            }
+            else if (e.keyCode===39) {
+                $('#book-m').turn('next');
+            }
+
+        });
+
+        $('#page-number').keydown(function(e){
+            inputPageNum = ($(this).val());
+
+            if (e.keyCode===13) {
+                if (inputPageNum <= numberOfPages && inputPageNum !== 0) {
+                    $('#book-m').turn('page', inputPageNum);
+                }
+                //범위 벗어난 숫자 입력하면 현재 페이지 유지
+                else {
+                    let currentPage = $('#book-m').turn('page');
+                    $('#page-number').val(currentPage);
+                }
+            }
+        });
+
+        // 책 클릭시 이벤트
+        $('#book-m').click(function(e) {
+            let half = $(this).width()/2;
+
+            //책의 왼쪽 클릭시 이전 페이지 이동
+            if(e.offsetX < half) {
+                $('#book-m').turn('previous');
+            }
+            //책의 오른쪽 클릭시 다음 페이지 이동
+            else {
+                $('#book-m').turn('next');
+            }
+        });
+    }
+
+    function openToc() {
+        $('.toc-container').addClass('active');
+    }
+
+    function closeToc() {
+        $('.toc-container').removeClass('active');
+    }
+</script>
+<body>
+<!-- 데스크톱, 노트북, 태블릿 영역 -->
+<div class="wrap">
+    <div id="book">
+        <div class="cover"><h1>The Bible</h1></div>
+    </div>
+    <div id="controls">
+        <div class="page-navi-left">
+            <label for="left-page-number"></label> <input type="text" size="3" id="left-page-number">/<span class="number-pages"></span>
+        </div>
+        <div class="page-navi-right">
+            <label for="right-page-number"></label> <input type="text" size="3" id="right-page-number">/<span class="number-pages"></span>
+        </div>
+    </div>
+</div>
+<!-- 모바일 영역 -->
+<div id="mobile-wrap">
+    <div id="book-m">
+       <!-- <div class="cover"><h1>Title(m)</h1></div>-->
+       <!--<div class="cover"><img src="/img/contents/1.jpg" alt="일러스트"></div>-->
+    </div>
+    <!--
+    <div id="controls-m">
+        <div class="page-navi">
+            <label for="page-number"></label> <input type="text" id="page-number">/<span class="number-pages"></span>
+        </div>
+        <div class="toc-icon">
+            <a class="toc" onclick="openToc()"><span class="material-symbols-outlined" style="font-size:24px;">list_alt</span></a>
+        </div>
+    </div>
+    -->
+
+    <div class="toc-container">
+        <div id="toc-action-sheet">
+            <div class="close-icon" onclick="closeToc()"><span class="material-symbols-outlined">close</span></div>
+            <h2>목차</h2>
+            <ul id="toc">
+                <li class="toc-li">일러스트<span>1p</span></li>
+                <li class="toc-li">처음으로</li>
+                <li class="toc-li">크레딧</li>
+                <li class="toc-li">본문</li>
+                <li class="toc-li">저자 소개</li>
+                <li class="toc-li">공연 정보</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<form id="searchForm">
+    <input type="hidden" name="fileName" id="fileName" value="e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록">
+</form>
+</body>
+</html>
