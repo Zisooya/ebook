@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- minimum-scale=1.0 : 사용자가 페이지를 기본 크기 이하로 축소할 수 없도록 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0">
     <title>ebook</title>
     <!-- 폰트 설정 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +19,8 @@
     <!-- alert 커스텀 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+    <!-- 기기별 감지 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js"></script>
     <!-- js -->
     <script src="/js/function.js"></script>
     <!-- css -->
@@ -26,7 +29,7 @@
 <style>
     body {
         width: 100vw;
-        height: 100vh;
+        height: 100dvh;
         background: #ccc;
         overflow: hidden;
     }
@@ -71,19 +74,120 @@
         border: none;
         background-color: #FFF;
     }
+
+    /* 노트북 & 테블릿 가로 (해상도 1024px ~ 1279px)*/
+    @media all and (min-width: 1024px) and (max-width: 1279px) {
+        html {
+            background-color: aquamarine;
+        }
+    }
+    html.landscape {
+        transform: rotate(-90deg);
+        transform-origin: top left;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+    .login-form.landscape {
+        width: 100vh;
+        top: 50vw;
+    }
+
+    /* 가로 긴 모드 고정 (임시로 전 기기 고정, 추후 폰만 고정할 것) */
+/*    @media (orientation: landscape) {
+        html {
+            transform: rotate(-90deg);
+            transform-origin: top left;
+            position: absolute;
+            top: 100%;
+            left: 0;
+        }
+
+        .login-form {
+            width: 100vh;
+            top: 50vw;
+        }
+    }*/
 </style>
 <script th:inline="javascript">
     $(function () {
-        $('#submitBtn').on('click',function(event){
+        $('#submitBtn').on('click', function (event) {
             goEbook();
         });
 
         //엔터 이벤트
-        $('#password').on('keyup',function(event){
-            if(event.keyCode === 13){
+        $('#password').on('keyup', function (event) {
+            if (event.keyCode === 13) {
                 goEbook();
             }
         });
+
+        let md = new MobileDetect(navigator.userAgent);
+
+        console.log(navigator.userAgent);
+        console.log(md);
+        console.log('mobile: ' + md.mobile());
+        console.log('phone: ' + md.phone());
+        console.log('tablet: ' + md.tablet());
+        console.log('userAgent: ' + md.userAgent());
+        console.log('os: ' + md.os());
+        console.log('isiPhone: ' + md.is('iPhone'));
+        console.log('isBot: ' + md.is('bot'));
+        console.log('' + md.version('Webkit'));
+        console.log('' + md.versionStr('Build'));
+        console.log('isPlaystation|xbox: ' + md.match('playstation|xbox'));
+
+        //mobile인 경우 (phone or tablet)
+        if (md.mobile()) { //감지된 휴대전화 또는 태블릿 유형을 반환하거나 모바일 기기가 아니면 null을 반환
+            //alert('mobile');
+            //phone인 경우 - 세로 모드 고정, 싱글 모드
+            if (md.phone()) {
+                alert("Phone");
+                console.log(md.phone() + '은 lock');
+
+                //화면 회전시 세로 모드 고정
+                window.addEventListener("orientationchange", function () {
+                    console.log("스크린 방향: " + screen.orientation.type);
+                    //landscape-primary : 가로 길게
+                    //portrait-primary : 세로 길게
+
+
+                    if (window.matchMedia('(orientation: portrait)').matches) {
+                        // Portrait 모드일 때 실행할 스크립트
+                        console.log('가로 길게 변경');
+
+                        $('html').addClass('landscape');
+                        $('.login-form').addClass('landscape');
+                    } else {
+                        // Landscape 모드일 때 실행할 스크립트
+                        console.log('세로 길게 변경');
+                        $('html').removeClass('landscape');
+                        $('.login-form').removeClass('landscape');
+                    }
+                });
+            }
+            //tablet인 경우 - 세로 모드: 싱글, 가로 모드: 더블
+            else {
+                alert("Tablet");
+                console.log('태블릿은 회전 가능');
+            }
+        }
+        //pc인 경우
+        else {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            if (width >= 1024) {
+                // PC
+                alert('PC 또는 태블릿 가로 길게');
+            }
+                //문제는 큰 태블릿인데 pc로 잡히는 경우가 있음...ipad air랑 갤럭시탭..
+            //태블릿 가로인 경우도 정확히 Tablet으로 잡고 싶지만 어차피 pc 모드와 태블릿 가로 길게 모드는 모두 더블 페이지 모드이므로 이렇게 가기
+            else {
+                alert('큰 태블릿 세로');
+            }
+            //alert('pc');
+        }
     });
 
     function goEbook() {
@@ -110,10 +214,6 @@
             }
         }
         else{}
-    }
-    // 모바일인지 체크하는 함수
-    function isMobile() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 </script>
 <body>
