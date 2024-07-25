@@ -5,7 +5,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>ebook</title>
 	<!-- 폰트 설정 -->
-
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
@@ -16,8 +15,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
 			integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
 			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<!-- 기기별 감지 -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js"></script>
 	<!-- ebook 관련 라이브러리 -->
 	<script src="/js/lib/turn.min.js"></script>
 	<script src="/js/init.js"></script>
@@ -417,41 +414,14 @@
 			box-sizing: border-box; /* 패딩과 보더를 포함한 크기 설정 */
 		}
 	}
-
-	html.landscape {
-		transform: rotate(-90deg);
-		transform-origin: top left;
-		position: absolute;
-		top: 100%;
-		left: 0;
-	}
-
-	#mobile-wrap.landscape {
-		width: 100vh;
-		height: calc((100vh * 1.414) + 30px); /* 30px은 #control-m 영역 */
-		box-sizing: border-box;
-
-		/* 수직 가운데 정렬 */
-		position: absolute;
-		left: 50%;
-		transform: translate(0, -50%);
-
-		/*position: fixed;	!* 스크롤 고정 *!*/
-		/*overflow: hidden;	!* 스크롤 고정 *!*/
-	}
-
-
 </style>
 <script th:inline="javascript">
-	let pageMode;	//single or double
-	let isPhone;	//기기 phone 여부 (폰이면 회전 이벤트 막기)
 	//로딩 될 때
 	$(function () {
-		//기기별 ebook 출력
 		printEbook();
 
 		//목차 리스트별로 터치 시 해당 페이지 이동
-		if(isMobile()){//모바일일 경우
+		if(isMobile()){// 모바일일 경우
 			$('.toc-li').bind('touchstart', function (e) {
 				$('#book-m').turn('page', $(this).val());
 				closeToc();
@@ -463,129 +433,21 @@
 				closeToc();
 			});
 		}
-
-/*
-		window.addEventListener("orientationchange", function () {
-			alert("스크린 모드: " + screen.orientation.type);
-		});
-*/
-
-		//윈도우 크기 변경 시 이벤트 (태블릿 회전 시 이벤트)
-		$(window).on('resize', debounce(function() {
-			if(isPhone) {
-				if (window.matchMedia('(orientation: portrait)').matches) {
-					// Portrait 모드일 때 실행할 스크립트
-					console.log('세로 길게 변경');
-					//$('html').addClass('landscape');
-					//$('#mobile-wrap').addClass('landscape');
-				} else {
-					// Landscape 모드일 때 실행할 스크립트
-					console.log('가로 길게 변경');
-					//$('html').removeClass('landscape');
-					//$('#mobile-wrap').removeClass('landscape');
-				}
-			}
-			else {
-				pageMode = checkOrientation();
-				alert(pageMode);
-			}
-		}, 300)); // 300ms 후에 실행 (0.3초)
 	});
 
-	// 디바운스 함수
-	function debounce(func, wait) {
-		let timeout;
-		return function() {
-			clearTimeout(timeout);
-			timeout = setTimeout(func, wait);
-		};
-	}
-
-	//태블릿 orientation 체크
-	function checkOrientation() {
-		console.log(screen.height+','+screen.width);
-		if (screen.height > screen.width) {
-			//세로 길게
-			return 'single';
-		} else {
-			//가로 길게
-			return 'double';
-		}
-	}
 	function fn_callback(callbackId, resData) {
 	}
 
 	function printEbook() {
-/*		if (isMobile()) {//싱글 페이지 모드
-			//화면 회전시 세로 모드 고정
-			//setOnlyPortrait();
-			printSingleBook();
-		} else {//더블 페이지 모드
-			printDoubleBook();
-		}*/
-		if(detectDevice()==='single') {
-			printSingleBook();
-		}
-		else if(detectDevice()==='double') {
-			printDoubleBook();
-		}
-	}
-
-	//화면 회전시 세로 모드 고정
-	function setOnlyPortrait() {
-		window.addEventListener("orientationchange", function () {
-			console.log("스크린 방향: " + screen.orientation.type);
-			//landscape-primary : 가로 길게
-			//portrait-primary : 세로 길게
-			if (window.matchMedia('(orientation: portrait)').matches) {
-				// Portrait 모드일 때 실행할 스크립트
-				console.log('가로 길게 변경');
-
-				$('html').addClass('landscape');
-				//$('#mobile-wrap').addClass('landscape');
-			} else {
-				// Landscape 모드일 때 실행할 스크립트
-				console.log('세로 길게 변경');
-				$('html').removeClass('landscape');
-				//$('#mobile-wrap').removeClass('landscape');
+		//기기별 ebook 출력
+		if (isMobile()) {// 모바일일 경우
+			//아이폰, 아이패드일 경우
+			if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 			}
-		});
-	}
 
-	function detectDevice() {
-		let md = new MobileDetect(navigator.userAgent);
-
-		//mobile인 경우 (phone or tablet)
-		if (md.mobile()) { //감지된 휴대전화 또는 태블릿 유형을 반환하거나 모바일 기기가 아니면 null을 반환
-			//phone인 경우 - 세로 모드 고정, 싱글 모드
-			if (md.phone()) {
-				//setOnlyPortrait();
-				isPhone = true;
-				return 'single';
-			}
-			//tablet인 경우 - 세로 모드: 싱글, 가로 모드: 더블
-			else {
-				console.log('태블릿은 회전 가능');
-				//태블릿은 가로, 세로 모드에 따라 페이지 모드 설정
-				return checkOrientation();
-			}
-		}
-		//pc인 경우
-		else {
-			const width = window.innerWidth;
-			const height = window.innerHeight;
-
-			if (width >= 1024) {
-				// PC
-				alert('PC 또는 태블릿 가로 길게');
-				return 'double';
-			}
-			//문제는 큰 태블릿인데 pc로 잡히는 경우가 있음...ipad air랑 갤럭시탭..
-			//태블릿 가로인 경우도 정확히 Tablet으로 잡고 싶지만 어차피 pc 모드와 태블릿 가로 길게 모드는 모두 더블 페이지 모드이므로 이렇게 가기
-			else {
-				alert('큰 태블릿 세로');
-				return 'single';
-			}
+			printMobileBook();
+		} else {// 모바일 외
+			printBook();
 		}
 	}
 
@@ -638,7 +500,6 @@
 			else {
 				//페이지 컨트롤러 삽입
 				controller = '    <div id="controls-m">\n' +
-
 					'        <div class="page-navi">\n' +
 					'            <label for="page-number"></label> <input type="text" class="page-number" value="' + page + '" readonly>/<span class="number-pages">' + numberOfPages + '</span>\n' +
 					'        </div>\n' +
@@ -653,7 +514,7 @@
 	}
 
 	//책 출력하는 함수
-	function printDoubleBook() {
+	function printBook() {
 		//모바일 영역 비활성화
 		$('#mobile-wrap').css('display', 'none');
 
@@ -661,7 +522,7 @@
 		$('#book').turn({
 			acceleration: true, //하드웨어 가속 모드를 설정
 			pages: numberOfPages,   //전체 페이지 수
-			elevation: 50,  //페이지 쌓임 효과
+			//elevation: 50,
 			//gradients: !$.isTouch,  //그라데이션 모드 설정
 			gradients: true,  //그라데이션 모드 설정
 			when: { //turn 이벤트 옵션 정의
@@ -703,7 +564,7 @@
 		});
 	}
 
-	function printSingleBook() {
+	function printMobileBook() {
 		//모바일 영역 활성화
 		$('#mobile-wrap').css('display', 'block');
 		$('.wrap').css('display', 'none');

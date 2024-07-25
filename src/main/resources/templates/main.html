@@ -121,87 +121,44 @@
                 goEbook();
             }
         });
-
-        let md = new MobileDetect(navigator.userAgent);
-
-        console.log(navigator.userAgent);
-        console.log(md);
-        console.log('mobile: ' + md.mobile());
-        console.log('phone: ' + md.phone());
-        console.log('tablet: ' + md.tablet());
-        console.log('userAgent: ' + md.userAgent());
-        console.log('os: ' + md.os());
-        console.log('isiPhone: ' + md.is('iPhone'));
-        console.log('isBot: ' + md.is('bot'));
-        console.log('' + md.version('Webkit'));
-        console.log('' + md.versionStr('Build'));
-        console.log('isPlaystation|xbox: ' + md.match('playstation|xbox'));
-
-        //mobile인 경우 (phone or tablet)
-        if (md.mobile()) { //감지된 휴대전화 또는 태블릿 유형을 반환하거나 모바일 기기가 아니면 null을 반환
-            //alert('mobile');
-            //phone인 경우 - 세로 모드 고정, 싱글 모드
-            if (md.phone()) {
-                alert("Phone");
-                console.log(md.phone() + '은 lock');
-
-                //화면 회전시 세로 모드 고정
-                window.addEventListener("orientationchange", function () {
-                    console.log("스크린 방향: " + screen.orientation.type);
-                    //landscape-primary : 가로 길게
-                    //portrait-primary : 세로 길게
-
-
-                    if (window.matchMedia('(orientation: portrait)').matches) {
-                        // Portrait 모드일 때 실행할 스크립트
-                        console.log('가로 길게 변경');
-
-                        $('html').addClass('landscape');
-                        $('.login-form').addClass('landscape');
-                    } else {
-                        // Landscape 모드일 때 실행할 스크립트
-                        console.log('세로 길게 변경');
-                        $('html').removeClass('landscape');
-                        $('.login-form').removeClass('landscape');
-                    }
-                });
-            }
-            //tablet인 경우 - 세로 모드: 싱글, 가로 모드: 더블
-            else {
-                alert("Tablet");
-                console.log('태블릿은 회전 가능');
-            }
-        }
-        //pc인 경우
-        else {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-
-            if (width >= 1024) {
-                // PC
-                alert('PC 또는 태블릿 가로 길게');
-            }
-                //문제는 큰 태블릿인데 pc로 잡히는 경우가 있음...ipad air랑 갤럭시탭..
-            //태블릿 가로인 경우도 정확히 Tablet으로 잡고 싶지만 어차피 pc 모드와 태블릿 가로 길게 모드는 모두 더블 페이지 모드이므로 이렇게 가기
-            else {
-                alert('큰 태블릿 세로');
-            }
-            //alert('pc');
-        }
     });
 
     function goEbook() {
         let reqData = $('#loginForm').serialize();
-
         cfn_ajaxRequest('/login', 'POST', reqData);
     }
 
+    function detectDevice() {
+        let md = new MobileDetect(navigator.userAgent);
+
+        //mobile인 경우 (phone or tablet)
+        if (md.mobile()) { //감지된 휴대전화 또는 태블릿 유형을 반환하거나 모바일 기기가 아니면 null을 반환
+            //phone
+            if (md.phone()) {
+                return 'phone';
+            }
+            //tablet
+            else {
+                return 'tablet'
+            }
+        }
+        //pc인 경우(화면이 큰 태블릿인 경우도 있으나 phone 여부만 체크하면 되므로 메인 페이지에서는 pc로 구분)
+        else {
+           return 'pc';
+        }
+    }
     function fn_callback(callbackId, resData) {
         if (callbackId === 'login') {
             let isMatch = resData;
 
             if(isMatch) {
-                location.href = '/ebook';
+                let device = detectDevice();
+                if(device === 'phone') {
+                    location.href = '/ebook_p';
+                }
+                else {
+                    location.href = '/ebook';
+                }
             }
             else {
                 $('#password').focus();
