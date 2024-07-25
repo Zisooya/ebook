@@ -29,11 +29,20 @@ public class MainController {
         return isMatch;
     }
 
-    @GetMapping("/ebook")
-    public String epubPage(HttpServletRequest req, Model model){
+    @GetMapping("/ebook_p")
+    public String phoneEbookPage(HttpServletRequest req, Model model){
+        System.out.println("폰폰");
         model.addAttribute("ebookImageInfo", mainService.getEbookImageInfo(req));
-        return "ebook/ebook_4";
+        return "ebook/ebook_p";
     }
+
+    @GetMapping("/ebook")
+    public String ebookPage(HttpServletRequest req, Model model){
+        System.out.println("pc태블");
+        model.addAttribute("ebookImageInfo", mainService.getEbookImageInfo(req));
+        return "ebook/ebook";
+    }
+
 
     @GetMapping("/pdf")
     @ResponseBody
