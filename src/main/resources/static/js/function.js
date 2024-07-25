@@ -37,6 +37,8 @@ function cfn_ajaxRequest(url, method, data, callbackId){
  * @returns {void}
  */
 function printDoubleBook() {
+	let ebookImageInfo = g_ebookImageInfo;
+	let numberOfPages = ebookImageInfo.imageCount;
 	//모바일 영역 비활성화
 	$('#mobile-wrap').css('display', 'none');
 
@@ -92,6 +94,8 @@ function printDoubleBook() {
  * @returns {void}
  */
 function printSingleBook() {
+	let ebookImageInfo = g_ebookImageInfo;
+	let numberOfPages = ebookImageInfo.imageCount;
 	//모바일 영역 활성화
 	$('#mobile-wrap').css('display', 'block');
 	$('.wrap').css('display', 'none');
