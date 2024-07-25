@@ -15,6 +15,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
 			integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
 			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- 기기별 감지 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js"></script>
 	<!-- ebook 관련 라이브러리 -->
 	<script src="/js/lib/turn.min.js"></script>
 	<script src="/js/init.js"></script>
@@ -414,10 +416,59 @@
 			box-sizing: border-box; /* 패딩과 보더를 포함한 크기 설정 */
 		}
 	}
+    html.landscape {
+        transform: rotate(-90deg);
+        transform-origin: top left;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+    #mobile-wrap.landscape {
+        width: 100vh;
+        height: calc((100vh * 1.414) + 30px); /* 30px은 #control-m 영역 */
+        box-sizing: border-box;
+
+        /* 수직 가운데 정렬 */
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+    }
+
+    #book-m {
+        width: 100%;
+        height: 100%;
+    }
+
+    #book-m .cover {
+        background: saddlebrown;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #controls-m {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 14px;
+        box-sizing: border-box;
+        line-height: 32px;
+    }
+
+    img[id^="data_"] {
+        display: block;
+        width: 100%;
+        height: calc(100% - 30px); /* 30px은 #control-m 영역 */
+        box-sizing: border-box;
+    }
 </style>
 <script th:inline="javascript">
+	let g_md = new MobileDetect(navigator.userAgent);
+
 	//로딩 될 때
 	$(function () {
+		let md = g_md;
 		printEbook();
 
 		//목차 리스트별로 터치 시 해당 페이지 이동
@@ -426,6 +477,37 @@
 				$('#book-m').turn('page', $(this).val());
 				closeToc();
 			});
+
+			////phone인 경우 - 세로 모드 고정, 싱글 모드
+			if(isPhone()){
+				//화면 회전시 세로 모드 고정
+				alert("Phone");
+				console.log(md.phone() + '은 lock');
+
+				//화면 회전시 세로 모드 고정
+				window.addEventListener("orientationchange", function () {
+					console.log("스크린 방향: " + screen.orientation.type);
+					//landscape-primary : 가로 길게
+					//portrait-primary : 세로 길게
+
+					if (window.matchMedia('(orientation: portrait)').matches) {
+						// Portrait 모드일 때 실행할 스크립트
+						console.log('가로 길게 변경');
+						$('html').addClass('landscape');
+						$('#mobile-wrap').addClass('landscape');
+					} else {
+						// Landscape 모드일 때 실행할 스크립트
+						console.log('세로 길게 변경');
+						$('html').removeClass('landscape');
+						$('#mobile-wrap').removeClass('landscape');
+					}
+				});
+			}
+			else{
+				alert("Tablet");
+				console.log('태블릿은 회전 가능');
+			}
+
 		}
 		else{// 모바일 외
 			$('.toc-li').bind('click', function (e) {
@@ -465,8 +547,18 @@
 	let imagePath = ebookImageInfo.imagePath;
 
 	// 모바일인지 체크하는 함수
-	function isMobile() {
+	/*function isMobile() {
 		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+	}*/
+
+	// 모바일인지 체크하는 함수
+	function isMobile() {
+		return g_md.mobile();
+	}
+
+	//폰인지 태블릿인지 체크하는 함수
+	function isPhone() {
+		return g_md.phone();
 	}
 
 	//book 요소에 page 추가하는 함수

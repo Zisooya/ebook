@@ -32,7 +32,7 @@ public class MainController {
     @GetMapping("/ebook")
     public String epubPage(HttpServletRequest req, Model model){
         model.addAttribute("ebookImageInfo", mainService.getEbookImageInfo(req));
-        return "ebook/ebook_4";
+        return "ebook/ebook_copy3";
     }
 
     @GetMapping("/pdf")
