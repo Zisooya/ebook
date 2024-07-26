@@ -124,11 +124,11 @@ function printSingleBook() {
 				$('.page-number').val(page);
 
 				//이미지맵(링크) 있는 페이지
-				if(page === 25){
+				if(page === 25 || page === 26){
 					//반응형 이미지맵 좌표 조정
 					$('map').imageMapResize();
 
-					// 클릭 이벤트 핸들러 추가
+					//이미지맵 링크 터치 이벤트
 					$('area').bind('touchstart', function(e) {
 						e.preventDefault(); //현재 이벤트의 기본 동작 중단
 						e.stopPropagation(); //현재 이벤트의 상위 전파 중단
@@ -136,7 +136,6 @@ function printSingleBook() {
 
 						let href = $(this).attr('href');
 						window.open(href, '_blank');
-
 					});
 				}
 

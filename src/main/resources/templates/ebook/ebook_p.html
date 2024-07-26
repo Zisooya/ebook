@@ -20,6 +20,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js"></script>
 	<!-- ebook 관련 라이브러리 -->
 	<script src="/js/lib/turn.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/image-map-resizer/1.0.10/js/imageMapResizer.min.js"></script>
 	<script src="/js/init.js"></script>
 	<script src="/js/function.js"></script>
 	<!-- css -->
@@ -31,11 +32,10 @@
 		height: 100dvh;
 		background:#ccc;
 		position: relative;
-		/*overflow: hidden;*/
+		overflow: hidden;
 	}
 
 	body {
-
 	}
 
 	#mobile-wrap {
@@ -185,17 +185,6 @@
 
 	map {
 		z-index: 99999999999999;
-/*		display: block;
-		width: 100%;
-		height: 100%;
-		position: relative;*/
-		background-color: pink;
-	}
-	area {
-/*		display: block;
-		width: 100%;
-		height: 100%;*/
-		background-color: red;
 	}
 
 	@media( orientation: landscape ) {
@@ -243,16 +232,17 @@
 			//page에 element 요소를 추가
 			book.turn('addPage', element, page);
 
+			//이미지맵(링크) 있는 페이지 별도 처리
 			if(page === 25){
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" usemap="#image-map3" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map3" name="image-map3"><area style="width:100%!important;" target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
+				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
 			}
 			else if(page === 26) {
-
-
+				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
 			}
 			else {
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
+				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'">');
 			}
+
 			let controller;
 
 			//페이지 컨트롤러 삽입
