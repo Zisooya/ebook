@@ -243,27 +243,6 @@ function addPage(page, book) {
 }
 
 /**
- * [기능 함수] 목차 리스트 관련 이벤트 초기화
- * @author zisooya
- * @returns {void}
- */
-function tocEventInit() {
-	//목차 리스트별로 터치 시 해당 페이지 이동
-	if(isMobile()){//모바일일 경우
-		$('.toc-li').bind('touchstart', function (e) {
-			$('#book-m').turn('page', $(this).val());
-			closeToc();
-		});
-	}
-	else{// 모바일 외
-		$('.toc-li').bind('click', function (e) {
-			$('#book').turn('page', $(this).val());
-			closeToc();
-		});
-	}
-}
-
-/**
  * [기능 함수] 목차 아이콘 클릭 or 터치시 이벤트
  * @author zisooya
  * @returns {void}

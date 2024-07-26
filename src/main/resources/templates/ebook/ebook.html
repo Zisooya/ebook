@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0">
 	<title>ebook</title>
 	<!-- 폰트 설정 -->
 
@@ -106,6 +106,7 @@
 	.page-number {
 	}
 	.number-pages {
+        padding: 0 5px;
 		color: #999999;
 	}
 
@@ -144,13 +145,7 @@
 		height: 24px;
 		box-sizing: border-box;
 		transform: translate(0, -50%);
-		margin-right: 33px;
-	}
-
-	.toc-wrap:hover {
-		/* 서서히 나타나는 효과 */
-		visibility: visible;
-		opacity: 1;
+		margin-right: 3.2%;
 	}
 
 	.wrap .toc-container {
@@ -210,23 +205,258 @@
 		box-sizing: border-box;
 		font-weight: 700;
 	}
+
+	/* 태블릿 가로 긴 모드 (세로 여백이 남는 경우) */
+	@media (orientation: landscape) and (max-aspect-ratio:1.414427157001414/1) {
+			body {
+				display: flex;
+				align-items: center;
+			}
+
+			.wrap {
+				width: 100vw;
+				height: calc((100vw*1.414)/2);
+			}
+
+			.wrap .toc-container {
+				width: 100vw;
+				height: calc((100vw*1.414)/2);
+			}
+
+			#controls {
+				top: -7%;
+			}
+		}
+
+	/* 태블릿 세로 긴 모드 (세로 여백이 남는 경우) */
+	@media (orientation: portrait) and (max-aspect-ratio:0.7072135785007072/1) {
+		body {
+			display: flex;
+			align-items: center;
+		}
+
+		.wrap {
+			width: 100vw;
+			height: calc((100vw*1.414));
+		}
+
+		.wrap .toc-container {
+			width: 100vw;
+			height: calc((100vw*1.414));
+		}
+
+		.toc-wrap {
+			display: none;
+		}
+
+		#controls {
+			top: -6%;
+		}
+
+		.toc-icon {
+			position: absolute;
+			right: 6%
+		}
+	}
+
+	/* 태블릿 세로 긴 모드 (가로 여백이 남는 경우) */
+	@media (orientation: portrait) and (min-aspect-ratio:0.7072135785007072/1) {
+		.wrap {
+			width: calc(100vh/1.414);
+			height: 100vh;
+		}
+
+		.wrap .toc-container {
+			width: calc(100vh/1.414);
+			height: 100vh;
+		}
+
+		.toc-wrap {
+			display: none;
+		}
+
+		#controls {
+			top: -6%;
+		}
+
+		.toc-icon {
+			position: absolute;
+			right: 6%
+		}
+	}
+
+	/* 데스크탑에서의 hover 스타일 */
+	@media (hover: hover) {
+		.toc-wrap:hover {
+			/* 서서히 나타나는 효과(PC) */
+			visibility: visible;
+			opacity: 1;
+		}
+	}
+
+	/* 터치 디바이스에서의 기본 스타일 */
+	@media (hover: none) {
+		.toc-wrap.active {
+			/* 서서히 나타나는 효과(태블릿) */
+			visibility: visible;
+			opacity: 1;
+		}
+	}
 </style>
 <script th:inline="javascript">
+	let md = new MobileDetect(navigator.userAgent);
+
+	console.log(navigator.userAgent);
+	console.log(md);
+	console.log('mobile: ' + md.mobile());
+	console.log('phone: ' + md.phone());
+	console.log('tablet: ' + md.tablet());
+	console.log('userAgent: ' + md.userAgent());
+	console.log('os: ' + md.os());
+	console.log('isiPhone: ' + md.is('iPhone'));
+	console.log('isBot: ' + md.is('bot'));
+	console.log('' + md.version('Webkit'));
+	console.log('' + md.versionStr('Build'));
+	console.log('isPlaystation|xbox: ' + md.match('playstation|xbox'));
+
+
 	let g_ebookImageInfo = /*[[${ebookImageInfo}]]*/ 0;
 	let pageMode;	//single or double
+
+	document.addEventListener("touchstart", function() {}, true);
 	//로딩 될 때
 	$(function () {
 		//기기별 ebook 출력
 		printEbook();
 
-		//목차 리스트 관련 이벤트 초기화
-		tocEventInit();
+		// 터치 디바이스인지 확인
+		//let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+		let isTouchDevice = window.matchMedia("(hover: none)").matches;
+
+		//터치 디바아스인 경우(태블릿)
+		if(isTouchDevice){
+			//목차 아아콘 터치 이벤트
+			$('.toc-icon').bind('touchstart', function (e) {
+				openToc();
+				e.preventDefault(); // 터치 이벤트가 클릭 이벤트로 전파되는 것을 방지
+			});
+
+			//목차 리스트 관련 이벤트 초기화
+			$('.toc-li').bind('touchstart', function (e) {
+				$('#book').turn('page', $(this).val());
+				closeToc();
+			});
+
+			//터치 이벤트를 통한 active 클래스 토글
+			$('.toc-wrap').bind('touchstart', function(event) {
+				this.classList.toggle('active');
+				event.preventDefault(); // Prevents double-tap zoom
+			});
+		}
+		//마우스 디바이스인 경우(PC)
+		else{
+			//목차 아아콘 터치 이벤트
+			$('.toc-icon').bind('click', function (e) {
+				openToc();
+				e.preventDefault(); // 터치 이벤트가 클릭 이벤트로 전파되는 것을 방지
+			});
+
+			$('.toc-li').bind('click', function (e) {
+				$('#book').turn('page', $(this).val());
+				closeToc();
+			});
+		}
+
+		//터치 이벤트후 2초뒤 active 클래스 자동 삭제
+		/*$('.toc-wrap').bind('touchend', function(event) {
+			event.preventDefault(); // Prevents double-tap zoom
+			let self = this;
+			setTimeout( function() {
+				$(self).removeClass('active');
+			}, 2000);
+		});*/
 
 		//윈도우 크기 변경 시 이벤트 (태블릿 회전 시 이벤트)
 		$(window).on('resize', debounce(function() {
-			pageMode = checkOrientation();
-			alert(pageMode);
+			/*pageMode = checkOrientation();
+			alert(pageMode);*/
+			location.reload();
 		}, 300)); // 300ms 후에 실행 (0.3초)
+
+		// 화면 방향 변경 감지하여 스크립트 실행
+		window.addEventListener('orientationchange', function() {
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+
+			/* 태블릿 가로 긴 모드 (세로 여백이 남는 경우) */
+			if(window.matchMedia('(orientation: landscape)').matches && (height/1.414)*2 >= width){
+				// landscape 모드일 때 실행할 스크립트
+				$('body').css({
+					'display': 'flex',
+					'align-items': 'center'
+				});
+				$('.wrap').css({
+					'width': '100vw',
+					'height': 'calc((100vw*1.414)/2)'
+				});
+				$('.wrap .toc-container').css({
+					'width': '100vw',
+					'height': 'calc((100vw*1.414)/2)'
+				});
+				$('#controls').css({
+					'top': '-7%'
+				});
+			}
+			/* 태블릿 세로 긴 모드 (세로 여백이 남는 경우) */
+			else if(window.matchMedia('(orientation: portrait)').matches && (width*1.414) <= height){
+				// Portrait 모드일 때 실행할 스크립트
+				$('body').css({
+					'display': 'flex',
+					'align-items': 'center'
+				});
+				$('.wrap').css({
+					'width': '100vw',
+					'height': 'calc((100vw*1.414))'
+				});
+				$('.wrap .toc-container').css({
+					'width': '100vw',
+					'height': 'calc((100vw*1.414))'
+				});
+				$('.toc-wrap').css({
+					'display': 'none'
+				});
+				$('#controls').css({
+					'top': '-6%'
+				});
+				$('.toc-icon').css({
+					'position': 'absolute',
+					'right': '6%'
+				});
+			}
+			/* 태블릿 세로 긴 모드 (가로 여백이 남는 경우) */
+			else if(window.matchMedia('(orientation: portrait)').matches && (width*1.414) >= height){
+				// Portrait 모드일 때 실행할 스크립트
+				$('.wrap').css({
+					'width': 'calc(100vh/1.414)',
+					'height': '100vh'
+				});
+				$('.wrap .toc-container').css({
+					'width': 'calc(100vh/1.414)',
+					'height': '100vh'
+				});
+				$('.toc-wrap').css({
+					'display': 'none'
+				});
+				$('#controls').css({
+					'top': '-6%'
+				});
+				$('.toc-icon').css({
+					'position': 'absolute',
+					'right': '6%'
+				});
+			}
+			else{}
+		});
 	});
 
 	// 디바운스 함수
@@ -240,7 +470,7 @@
 
 	//태블릿 orientation 체크
 	function checkOrientation() {
-		console.log(screen.height+','+screen.width);
+		//console.log(screen.height+','+screen.width);
 		if (screen.height > screen.width) {
 			//세로 길게
 			return 'single';
@@ -282,7 +512,151 @@
 		else{}
 	}
 
+	function addPage(page, book) {
+		let ebookImageInfo = g_ebookImageInfo;
+		let numberOfPages = ebookImageInfo.imageCount;
+		let imagePath = ebookImageInfo.imagePath;
 
+		if (!book.turn('hasPage', page)) { //페이지가 이미 책에 있는지 체크
+			//페이지를 위한 요소
+			let element;
+			//모바일 아닌 경우
+			if(checkOrientation() === 'single'){
+				element = $('<div />', {'class': 'page', 'id': 'page-' + page}).html('<i class="loader"></i>');
+			}
+			//모바일인 경우
+			else if(checkOrientation() === 'double'){
+				let oddOrEven = (page%2===0) ? 'odd' : 'even';
+				element = $('<div />', {'class': 'page '+oddOrEven, 'id': 'page-'+page, 'onclick': 'turnBook(\''+oddOrEven+'\')'}).html('<i class="loader"></i>');
+			}
+			else{}
+
+			//page에 element 요소를 추가
+			book.turn('addPage', element, page);
+			element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
+			let controller = '';
+
+			if(checkOrientation() === 'single'){
+				//페이지 컨트롤러 삽입
+				controller = '    <div id="controls">\n' +
+
+					'        <div class="page-navi">\n' +
+					'            <label for="page-number"></label> <input type="text" id="page-number" value="' + page + '" readonly>/<span class="number-pages">' + numberOfPages + '</span>\n' +
+					'        </div>\n' +
+					'        <div class="toc-icon" ontouchstart="openToc()">\n' +
+					'            <span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>\n' +
+					'        </div>\n' +
+					'    </div>';
+			}
+			else if(checkOrientation() === 'double'){
+				//페이지 컨트롤러 삽입
+				controller = '' +
+					'	<div id="controls">\n' +
+					'		<div class="page-navi">\n' +
+					'			<label for="page-number"></label> <input type="text" id="page-number" value="' + page + '">/<span class="number-pages">' + numberOfPages + '</span>\n' +
+					'		</div>\n' +
+					'	</div>';
+
+			}
+			else{}
+
+			element.append(controller);
+		}
+	}
+
+	function printSingleBook() {
+		let ebookImageInfo = g_ebookImageInfo;
+		let numberOfPages = ebookImageInfo.imageCount;
+		//모바일 영역 활성화
+
+		let isTurning = false; // 상태 변수 추가 (2페이지 씩 넘어가는 오류 방지하기 위함)
+
+		//책 생성 및 출력
+		$('#book').turn({
+			display: 'single',
+			duration: 400,  //페이지 전환 효과 0.4초
+			elevation: 50,  //페이지 쌓임 효과
+			acceleration: true, //하드웨어 가속 모드를 설정
+			pages: numberOfPages,   //전체 페이지 수
+			gradients: true,  //그라데이션 모드 설정
+			when: { //turn 이벤트 옵션 정의
+				//페이지가 출력되기 전 실행
+				turning: function (e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+					//메모리 보관에 필요한 책의 페이지 범위를 가져옴
+					let range = $(this).turn('range', page);
+
+					//각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
+					for (page = range[0]; page <= range[1]; page++) {
+						addPage(page, $(this));
+					}
+				},
+				//페이지가 출력된 후 실행
+				turned: function (e, page) {
+					$('.page-number').val(page);
+
+					//책 터치시 페이지 넘김 이벤트
+					$('#data_' + page).bind('touchstart', function (e) {
+						console.log('Event triggered:', e.type);
+
+						if (isTurning) {
+							return; // 이미 페이지가 넘어가고 있는 경우 이벤트 무시
+						}
+
+						isTurning = true; // 페이지 전환 시작
+
+						//e.stopPropagation(); //상위 요소 이벤트 전파 방지
+						//e.preventDefault(); //브라우저의 기본 동작을 실행 방지
+
+						//터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
+						//getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
+						let offset = e.target.getBoundingClientRect();
+						let offsetX = e.touches[0].clientX - offset.x;
+
+						let half = $(this).width()/2;
+
+						//책의 왼쪽 클릭시 이전 페이지 이동
+						if(offsetX < half) {
+							$('#book').turn('previous');
+						}
+						//책의 오른쪽 클릭시 다음 페이지 이동
+						else {
+							$('#book').turn('next');
+						}
+
+						setTimeout(function () {
+							isTurning = false; // 일정 시간이 지난 후 상태 변수 리셋
+						}, 500); // 0.5초 후에 isTurning을 false로 설정
+					});
+				}
+			}
+		});
+
+		$('.number-pages').html(numberOfPages); //전체 페이지수 출력
+
+		//책 터치시 페이지 넘김 이벤트
+		/*
+				for (let i = 1; i < numberOfPages; i++) {   //페이지마다 반복
+					$('#data_' + i).bind('touchstart', function (e) {
+						//터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
+						//getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
+						const offset = e.target.getBoundingClientRect();
+						const offsetX = e.touches[0].clientX - offset.x;
+
+						let half = $(this).width()/2;
+
+						//책의 왼쪽 클릭시 이전 페이지 이동
+						if(offsetX < half) {
+							$('#book-m').turn('previous');
+						}
+						//책의 오른쪽 클릭시 다음 페이지 이동
+						else {
+							$('#book-m').turn('next');
+						}
+					});
+				}
+		 */
+
+	}
 </script>
 <body>
 <!-- 데스크톱, 노트북, 태블릿 영역 -->

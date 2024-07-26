@@ -33,11 +33,11 @@ public class MainService {
 	}
 
 	public ImageResponse getEbookImageInfo(HttpServletRequest req){
-		String device = commonUtil.isDevice(req);
+		/*String device = commonUtil.isDevice(req);
 		log.info("####################### device : "+device);
 
 		String device2 = commonUtil.isDevice2(req);
-		log.info("####################### device2 : "+device2);
+		log.info("####################### device2 : "+device2);*/
 
 		//해당 폴더에 이미지 갯수를 구하는 로직
 		String imagePath = "";
@@ -47,7 +47,8 @@ public class MainService {
 		else{
 			imagePath = "";
 		}
-		imagePath = imagePath.concat(IMG_DIR).concat(device2);
+		//imagePath = imagePath.concat(IMG_DIR).concat(device2);
+		imagePath = imagePath.concat(IMG_DIR);
 
 		File dir = new File(imagePath);
 		String[] extensions = new String[]{"jpg", "jpeg", "png", "gif"};
@@ -64,7 +65,8 @@ public class MainService {
 		}
 
 		//화면에서 보여줄 이미지 경로
-		imagePath = IMG_DIR.concat(device2).concat("/").concat(device2).concat("_");
+		//imagePath = IMG_DIR.concat(device2).concat("/").concat(device2).concat("_");
+		imagePath = IMG_DIR;
 		ImageResponse imageResponse = new ImageResponse();
 		imageResponse.setImageCount(imageCount);
 		imageResponse.setImagePath(imagePath);
