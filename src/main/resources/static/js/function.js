@@ -100,8 +100,6 @@ function printSingleBook() {
 	$('#mobile-wrap').css('display', 'block');
 	$('.wrap').css('display', 'none');
 
-	let isTurning = false; // 상태 변수 추가 (2페이지 씩 넘어가는 오류 방지하기 위함)
-
 	//책 생성 및 출력
 	$('#book-m').turn({
 		display: 'single',
@@ -125,38 +123,66 @@ function printSingleBook() {
 			turned: function (e, page) {
 				$('.page-number').val(page);
 
+				//이미지맵(링크) 있는 페이지
+				if(page === 25){
+					//반응형 이미지맵 좌표 조정
+					$('map').imageMapResize();
+
+					// 클릭 이벤트 핸들러 추가
+					$('area').bind('touchstart', function(e) {
+						e.preventDefault(); //현재 이벤트의 기본 동작 중단
+						e.stopPropagation(); //현재 이벤트의 상위 전파 중단
+						e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+
+						let href = $(this).attr('href');
+						window.open(href, '_blank');
+
+					});
+				}
+
 				//책 터치시 페이지 넘김 이벤트
 				$('#data_' + page).bind('touchstart', function (e) {
 					console.log('Event triggered:', e.type);
 
-					if (isTurning) {
-						return; // 이미 페이지가 넘어가고 있는 경우 이벤트 무시
-					}
+					e.preventDefault(); //현재 이벤트의 기본 동작 중단
+					e.stopPropagation(); //현재 이벤트의 상위 전파 중단
+					e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
 
-					isTurning = true; // 페이지 전환 시작
-
-					//e.stopPropagation(); //상위 요소 이벤트 전파 방지
-					//e.preventDefault(); //브라우저의 기본 동작을 실행 방지
-
-					//터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
+					let orientation = screen.orientation.type.includes('portrait') ? 'portrait' : 'landscape';
 					//getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
 					let offset = e.target.getBoundingClientRect();
-					let offsetX = e.touches[0].clientX - offset.x;
 
-					let half = $(this).width()/2;
+					//세로 길게 방향이면 X축 기준 이벤트
+					if(orientation === 'portrait') {
+						//터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
 
-					//책의 왼쪽 클릭시 이전 페이지 이동
-					if(offsetX < half) {
-						$('#book-m').turn('previous');
+						let offsetX = e.touches[0].clientX - offset.x;
+
+						let half = $(this).width()/2;
+
+						//책의 왼쪽 클릭시 이전 페이지 이동
+						if(offsetX < half) {
+							$('#book-m').turn('previous');
+						}
+						//책의 오른쪽 클릭시 다음 페이지 이동
+						else {
+							$('#book-m').turn('next');
+						}
 					}
-					//책의 오른쪽 클릭시 다음 페이지 이동
+					//가로 길게 방향이면 Y축 기준 이벤트
 					else {
-						$('#book-m').turn('next');
-					}
+						let offsetY = e.touches[0].clientY - offset.y;
+						let half = $(this).height()/2;
 
-					setTimeout(function () {
-						isTurning = false; // 일정 시간이 지난 후 상태 변수 리셋
-					}, 500); // 0.5초 후에 isTurning을 false로 설정
+						//책의 왼쪽 클릭시 이전 페이지 이동
+						if(offsetY < half) {
+							$('#book-m').turn('next');
+						}
+						//책의 오른쪽 클릭시 다음 페이지 이동
+						else {
+							$('#book-m').turn('previous');
+						}
+					}
 				});
 			}
 		}
