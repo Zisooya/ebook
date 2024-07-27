@@ -62,6 +62,22 @@ function printDoubleBook() {
 			},
 			//페이지가 출력된 후 실행
 			turned: function (e, page) {
+				//이미지맵(링크) 있는 페이지
+				if(page === 24 || page === 25 || page === 26){ //실제 이미지맵 포함 페이지는 25,26p이지만 double모드는 왼쪽 페이지 기준이므로 24p에도 추가함
+					//반응형 이미지맵 좌표 조정
+					$('map').imageMapResize();
+
+					//이미지맵 링크 터치,클릭 이벤트
+					$('area').bind('touchstart click', function(e) {
+						e.preventDefault(); //현재 이벤트의 기본 동작 중단
+						e.stopPropagation(); //현재 이벤트의 상위 전파 중단
+						e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+
+						let href = $(this).attr('href');
+						window.open(href, '_blank');
+					});
+				}
+
 				if((page%2===0)){
 					$('#toc-page-number').text(page);
 				}
