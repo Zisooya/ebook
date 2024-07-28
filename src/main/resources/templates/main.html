@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <title>ebook</title>
     <!-- favicon 설정 -->
-    <link rel="icon" href="/img/favicon/dog-32x32.png">
-    <link rel="shortcut icon" href="/img/favicon/dog-32x32.png">
-    <meta property="og:image" content="/img/favicon/kakao_title.png"> <!--카카오톡에 링크를 전송하면 보이는 이미지 설정-->
+    <link rel="icon" th:href="@{${imagePath} + 'favicon/dog-32x32.png'}">
+    <link rel="shortcut icon" th:href="@{${imagePath} + 'favicon/dog-32x32.png'}">
+    <meta property="og:image" th:content="@{${imagePath} + 'favicon/kakao_title.png'}"> <!--카카오톡에 링크를 전송하면 보이는 이미지 설정-->
     <!-- 잘리면 변경하기 (공연 <훔친 개 훔친 아기>의 기록) -->
     <meta property="og:title" content="공연 <훔친 개 훔친 아기 Stolen baby, Stolen dog>의 기록"> <!--카카오톡에 링크를 전송하면 보이는 타이틀 설정-->
     <meta property="og:description" content="이신후 BURNMHOME"> <!--카카오톡에 링크를 전송하면 보이는 내용 설정-->

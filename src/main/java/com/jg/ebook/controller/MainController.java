@@ -3,6 +3,7 @@ package com.jg.ebook.controller;
 import com.jg.ebook.service.MainService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +14,12 @@ public class MainController {
 
     private final MainService mainService;
 
+    @Value("${ebook.value.img.dir}")
+    private String IMG_DIR;
+
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String mainPage(Model model){
+        model.addAttribute("imagePath", IMG_DIR);
         return "main";
     }
 
