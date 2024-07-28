@@ -33,16 +33,19 @@
 	<link rel="stylesheet" type="text/css" href="/css/common.css"/>
 </head>
 <style>
+	html {
+		overflow: hidden;
+	}
+
 	body {
 		width: 100vw;
-		height: 100vh;
+		height: 100dvh;
 		background:#EAEAEA;
-		overflow: hidden;
 	}
 
 	.wrap {
 		width: calc((96vh/1.414)*2);	/* 뷰포트 통일 영역 */
-		height: 100vh;
+		height: 100dvh;
 		margin: 0 auto;
 		position: relative;
 	}
@@ -83,9 +86,9 @@
 		display: flex;
 		position: relative;
 		width:100% !important;
-		height: 4vh;			/* 뷰포트 통일 영역 */
+		height: 4dvh;			/* 뷰포트 통일 영역 */
 		text-align:center;
-		line-height: 3vh;
+		line-height: 3dvh;
 	}
 
 	.page-navi {
@@ -107,7 +110,7 @@
 
 	#book img {
 		width: 100%;
-		height: calc(100% - 4vh);	/* 뷰포트 통일 영역 */
+		height: calc(100% - 4dvh);	/* 뷰포트 통일 영역 */
 	}
 	.page-number {
 	}
@@ -157,7 +160,7 @@
 	.wrap .toc-container {
 		display: flex;
 		width: calc((96vh/1.414)*2);	/* 뷰포트 통일 영역 */
-		height: 100vh;
+		height: 100dvh;
 		box-sizing: border-box;
 		padding: 10px 0;
 		background-color: #ffffff;
@@ -178,10 +181,10 @@
 
 	.wrap #toc-action-sheet {
 		width: 100%;
-		max-height: 100vh;
+		max-height: 100dvh;
 		/* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
 		position: relative;
-		bottom: -100vh;
+		bottom: -100dvh;
 		transition: 0.5s;
 	}
 
@@ -191,7 +194,7 @@
 	}
 
 	.wrap .toc-container h2 {
-		margin: 0;
+		margin: 10px;
 		text-align: center;
 	}
 
@@ -278,13 +281,13 @@
 	/* 태블릿 세로 긴 모드 (가로 여백이 남는 경우) */
 	@media (orientation: portrait) and (min-aspect-ratio:0.7072135785007072/1) {
 		.wrap {
-			width: calc(96vh/1.414);
-			height: 100vh;
+			width: calc(96dvh/1.414);
+			height: 100dvh;
 		}
 
 		.wrap .toc-container {
-			width: calc(96vh/1.414);
-			height: 100vh;
+			width: calc(96dvh/1.414);
+			height: 100dvh;
 		}
 
 		.toc-wrap {
@@ -292,12 +295,12 @@
 		}
 
 		#controls {
-			height: 4vh;	/* 뷰포트 통일 영역 */
-			line-height: 3vh;
+			height: 4dvh;	/* 뷰포트 통일 영역 */
+			line-height: 3dvh;
 		}
 
 		#book img {
-			height: calc(100% - 4vh);	/* 뷰포트 통일 영역 */
+			height: calc(100% - 4dvh);	/* 뷰포트 통일 영역 */
 		}
 
 		.toc-icon {
@@ -444,12 +447,12 @@
 			else if(window.matchMedia('(orientation: portrait)').matches && (width*1.414) >= height){
 				// Portrait 모드일 때 실행할 스크립트
 				$('.wrap').css({
-					'width': 'calc(100vh/1.414)',
-					'height': '100vh'
+					'width': 'calc(100dvh/1.414)',
+					'height': '100dvh'
 				});
 				$('.wrap .toc-container').css({
-					'width': 'calc(100vh/1.414)',
-					'height': '100vh'
+					'width': 'calc(100dvh/1.414)',
+					'height': '100dvh'
 				});
 				$('.toc-wrap').css({
 					'display': 'none'
