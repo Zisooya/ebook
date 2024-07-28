@@ -41,8 +41,7 @@
 	}
 
 	.wrap {
-		width: calc((100vh/1.414)*2);
-		/*width: calc((100vw/2.1/1.414)*2);*/
+		width: calc((96vh/1.414)*2);	/* 뷰포트 통일 영역 */
 		height: 100vh;
 		margin: 0 auto;
 		position: relative;
@@ -82,17 +81,16 @@
 
 	#controls {
 		display: flex;
-		justify-content: space-between;
 		position: relative;
 		width:100% !important;
-		height: 30px;
+		height: 4vh;			/* 뷰포트 통일 영역 */
 		text-align:center;
-		margin:20px 0px;
-		top: -9%;
+		line-height: 3vh;
 	}
 
 	.page-navi {
 		width: 100%;
+		height: 100%;
 	}
 
 	#page-number {
@@ -109,7 +107,7 @@
 
 	#book img {
 		width: 100%;
-		height: 100%;
+		height: calc(100% - 4vh);	/* 뷰포트 통일 영역 */
 	}
 	.page-number {
 	}
@@ -135,7 +133,7 @@
 	#toc-page-navi {
 		position: absolute;
 		top: 50%;
-		left: 46%;
+		left: 47%;
 		width: 80px;
 		text-align: center;
 		transform: translate(0, -50%);
@@ -158,13 +156,13 @@
 
 	.wrap .toc-container {
 		display: flex;
-		width: calc((100vh/1.414)*2);
+		width: calc((96vh/1.414)*2);	/* 뷰포트 통일 영역 */
 		height: 100vh;
 		box-sizing: border-box;
 		padding: 10px 0;
 		background-color: #ffffff;
 		z-index: 9999999999999;
-		position: fixed;
+		position: absolute;
 		bottom: 0;
 		/* 서서히 나타나는 효과 */
 		visibility: hidden;
@@ -223,16 +221,21 @@
 
 			.wrap {
 				width: 100vw;
-				height: calc((100vw*1.414)/2);
+				height: calc((100vw*1.414)/2 + 3vw);	/* 뷰포트 통일 영역 */
 			}
 
 			.wrap .toc-container {
 				width: 100vw;
-				height: calc((100vw*1.414)/2);
+				height: calc((100vw*1.414)/2  + 3vw);	/* 뷰포트 통일 영역 */
 			}
 
 			#controls {
-				top: -7%;
+				height: 3vw;	/* 뷰포트 통일 영역 */
+				line-height: 2vw;
+			}
+
+			#book img {
+				height: calc(100% - 3vw);	/* 뷰포트 통일 영역 */
 			}
 		}
 
@@ -245,12 +248,12 @@
 
 		.wrap {
 			width: 100vw;
-			height: calc((100vw*1.414));
+			height: calc((100vw*1.414)  + 6vw);
 		}
 
 		.wrap .toc-container {
 			width: 100vw;
-			height: calc((100vw*1.414));
+			height: calc((100vw*1.414)  + 6vw);
 		}
 
 		.toc-wrap {
@@ -258,7 +261,12 @@
 		}
 
 		#controls {
-			top: -6%;
+			height: 6vw;	/* 뷰포트 통일 영역 */
+			line-height: 3.5vw;
+		}
+
+		#book img {
+			height: calc(100% - 6vw);	/* 뷰포트 통일 영역 */
 		}
 
 		.toc-icon {
@@ -270,12 +278,12 @@
 	/* 태블릿 세로 긴 모드 (가로 여백이 남는 경우) */
 	@media (orientation: portrait) and (min-aspect-ratio:0.7072135785007072/1) {
 		.wrap {
-			width: calc(100vh/1.414);
+			width: calc(96vh/1.414);
 			height: 100vh;
 		}
 
 		.wrap .toc-container {
-			width: calc(100vh/1.414);
+			width: calc(96vh/1.414);
 			height: 100vh;
 		}
 
@@ -284,7 +292,12 @@
 		}
 
 		#controls {
-			top: -6%;
+			height: 4vh;	/* 뷰포트 통일 영역 */
+			line-height: 3vh;
+		}
+
+		#book img {
+			height: calc(100% - 4vh);	/* 뷰포트 통일 영역 */
 		}
 
 		.toc-icon {
