@@ -45,7 +45,7 @@ function printDoubleBook() {
 	//책 생성 및 출력
 	$('#book').turn({
 		acceleration: true, //하드웨어 가속 모드를 설정
-		pages: numberOfPages,   //전체 페이지 수
+		pages: numberOfPages+3,   //전체 페이지 수
 		elevation: 50,  //페이지 쌓임 효과
 		//gradients: !$.isTouch,  //그라데이션 모드 설정
 		gradients: true,  //그라데이션 모드 설정
@@ -88,8 +88,8 @@ function printDoubleBook() {
 		}
 	});
 
-	$('.number-pages').html(numberOfPages); //전체 페이지수 출력
-	$('#toc-number-pages').html(numberOfPages); //전체 페이지수 출력
+	$('.number-pages').html((numberOfPages+3)); //전체 페이지수 출력
+	$('#toc-number-pages').html((numberOfPages+3)); //전체 페이지수 출력
 
 	$('#left-page-number').keydown(function (e) {
 		if (e.keyCode === 13) {

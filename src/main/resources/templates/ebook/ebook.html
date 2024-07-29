@@ -554,13 +554,34 @@
 
 			//page에 element 요소를 추가
 			book.turn('addPage', element, page);
-
-			//이미지맵(링크) 있는 페이지 별도 처리
-			if(page === 25){
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
+//2,4,6페이지는 빈페이지
+//3p에 2번
+//5p에 3번
+//7p에 4번
+//8p부터는 변수
+//page+3p에 page번
+			//빈페이지 or 이미지맵(링크) 있는 페이지 별도 처리
+			if(page===2 || page===4 || page===6){
+				element.html('');
+			}
+			else if(page===3) {
+				element.html('<img id="data_'+page+'" src="'+imagePath+'2.png">');
+			}
+			else if(page===5) {
+				element.html('<img id="data_'+page+'" src="'+imagePath+'3.png">');
+			}
+			else if(page===7) {
+				element.html('<img id="data_'+page+'" src="'+imagePath+'4.png">');
+			}
+			else if(page >= 8) {
+				console.log(page+'페이지에'+(page-3)+'.png 추가');
+				element.html('<img id="data_'+page+'" src="'+imagePath+(page-3)+'.png">');
+			}
+			else if(page === 25) {
+				element.html('<img id="data_'+(page+3)+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
 			}
 			else if(page === 26) {
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
+				element.html('<img id="data_'+(page+3)+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
 			}
 			else {
 				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
@@ -585,10 +606,9 @@
 				controller = '' +
 					'	<div id="controls">\n' +
 					'		<div class="page-navi">\n' +
-					'			<label for="page-number"></label> <input type="text" id="page-number" value="' + page + '">/<span class="number-pages">' + numberOfPages + '</span>\n' +
+					'			<label for="page-number"></label> <input type="text" id="page-number" value="' + page + '">/<span class="number-pages">' + (numberOfPages+3) + '</span>\n' +
 					'		</div>\n' +
 					'	</div>';
-
 			}
 			else{}
 
@@ -662,12 +682,39 @@
 						else {
 							$('#book').turn('next');
 						}
+
 					});
 				}
 			}
 		});
 
 		$('.number-pages').html(numberOfPages); //전체 페이지수 출력
+	}
+
+	/**
+	 * [기능 함수] 목차 아이콘 클릭 or 터치시 이벤트
+	 * @author zisooya
+	 * @returns {void}
+	 */
+	function openToc() {
+		if(checkOrientation() === 'single') {
+			$('#toc-ul').html('\t\t\t\t<li class="toc-li" value="1">일러스트<span>1p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="2">크레딧<span>2p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="3">처음으로<span>3p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="5">본문<span>5p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="25">저자 소개<span>25p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="26">공연 정보<span>26p</span></li>\n');
+		}
+		else if(checkOrientation() === 'double') {
+			$('#toc-ul').html('\t\t\t\t<li class="toc-li" value="1">일러스트<span>1p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="3">크레딧<span>3p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="5">처음으로<span>5p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="8">본문<span>8p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="28">저자 소개<span>28p</span></li>\n' +
+					'\t\t\t\t<li class="toc-li" value="29">공연 정보<span>29p</span></li>');
+		}
+
+		$('.toc-container').addClass('active');
 	}
 </script>
 <body>
@@ -689,14 +736,7 @@
 		<div id="toc-action-sheet">
 			<div class="close-icon" onclick="closeToc()"><span class="material-symbols-outlined">close</span></div>
 			<h2>목차</h2>
-			<ul>
-				<li class="toc-li" value="1">일러스트<span>1p</span></li>
-				<li class="toc-li" value="2">처음으로<span>2p</span></li>
-				<li class="toc-li" value="3">크레딧<span>3p</span></li>
-				<li class="toc-li" value="5">본문<span>5p</span></li>
-				<li class="toc-li" value="25">저자 소개<span>25p</span></li>
-				<li class="toc-li" value="26">공연 정보<span>26p</span></li>
-			</ul>
+			<ul id="toc-ul"></ul>
 		</div>
 	</div>
 </div>

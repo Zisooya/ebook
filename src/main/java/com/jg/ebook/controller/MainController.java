@@ -28,7 +28,7 @@ public class MainController {
     public boolean epubPage(@RequestParam("password") String password){
         boolean isMatch;
 
-        isMatch = password.equals("1234");
+        isMatch = password.equals("Dog2024*");
 
         return isMatch;
     }
