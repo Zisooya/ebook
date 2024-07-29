@@ -81,6 +81,12 @@ function printDoubleBook() {
 					});
 				}
 
+				//목차 리스트 관련 이벤트 초기화
+				$('.toc-li').on('touchstart', function (e){
+					$('#book').turn('page', $(this).val());
+					closeToc();
+				});
+
 				if((page%2===0)){
 					$('#toc-page-number').text(page);
 				}
