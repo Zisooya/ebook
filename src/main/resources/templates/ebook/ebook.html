@@ -156,6 +156,11 @@
 		box-sizing: border-box;
 		transform: translate(0, -50%);
 		margin-right: 3.2%;
+		visibility: hidden;
+	}
+
+	.toc-wrap .toc-icon.active {
+		visibility: visible;
 	}
 
 	.wrap .toc-container {
@@ -351,8 +356,10 @@
 		if(isTouchDevice){
 			//목차 아아콘 터치 이벤트
 			$('.toc-icon').on('touchstart', function (e){
-				openToc();
-				e.preventDefault(); // 터치 이벤트가 클릭 이벤트로 전파되는 것을 방지
+                e.preventDefault(); //현재 이벤트의 기본 동작 중단
+                e.stopPropagation(); //현재 이벤트의 상위 전파 중단
+                e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+                openToc();
 			});
 
 			//목차 리스트 관련 이벤트 초기화
@@ -362,9 +369,13 @@
 			});
 
 			//터치 이벤트를 통한 active 클래스 토글
-			$('.toc-wrap').on('touchstart', function(event){
-				this.classList.toggle('active');
-				event.preventDefault(); // Prevents double-tap zoom
+			$('.toc-wrap').on('touchstart', function(e) {
+				e.preventDefault(); //현재 이벤트의 기본 동작 중단
+				e.stopPropagation(); //현재 이벤트의 상위 전파 중단
+				e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+
+				$(this).toggleClass('active');
+				$('.toc-wrap .toc-icon').toggleClass('active');
 			});
 		}
 		//마우스 디바이스인 경우(PC)
@@ -471,13 +482,34 @@
 
 			//page에 element 요소를 추가
 			book.turn('addPage', element, page);
-
-			//이미지맵(링크) 있는 페이지 별도 처리
-			if(page === 25){
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
+//2,4,6페이지는 빈페이지
+//3p에 2번
+//5p에 3번
+//7p에 4번
+//8p부터는 변수
+//page+3p에 page번
+			//빈페이지 or 이미지맵(링크) 있는 페이지 별도 처리
+			if(page===2 || page===4 || page===6){
+				element.html('');
+			}
+			else if(page===3) {
+				element.html('<img id="data_'+page+'" src="'+imagePath+'2.png">');
+			}
+			else if(page===5) {
+				element.html('<img id="data_'+page+'" src="'+imagePath+'3.png">');
+			}
+			else if(page===7) {
+				element.html('<img id="data_'+page+'" src="'+imagePath+'4.png">');
+			}
+			else if(page >= 8) {
+				console.log(page+'페이지에'+(page-3)+'.png 추가');
+				element.html('<img id="data_'+page+'" src="'+imagePath+(page-3)+'.png">');
+			}
+			else if(page === 25) {
+				element.html('<img id="data_'+(page+3)+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
 			}
 			else if(page === 26) {
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
+				element.html('<img id="data_'+(page+3)+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
 			}
 			else {
 				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
@@ -502,10 +534,9 @@
 				controller = '' +
 					'	<div id="controls">\n' +
 					'		<div class="page-navi">\n' +
-					'			<label for="page-number"></label> <input type="text" id="page-number" value="' + page + '">/<span class="number-pages">' + numberOfPages + '</span>\n' +
+					'			<label for="page-number"></label> <input type="text" id="page-number" value="' + page + '">/<span class="number-pages">' + (numberOfPages+3) + '</span>\n' +
 					'		</div>\n' +
 					'	</div>';
-
 			}
 			else{}
 
@@ -582,6 +613,7 @@
 						else{
 							$('#book').turn('next');
 						}
+
 					});
 				}
 			}
