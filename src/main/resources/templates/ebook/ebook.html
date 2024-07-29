@@ -330,8 +330,10 @@
 </style>
 <script th:inline="javascript">
 	let g_ebookImageInfo = /*[[${ebookImageInfo}]]*/ 0;
+	let g_prevPageNumber = /*[[${pno}]]*/ 0;
 	let g_pageNumber;
 
+	console.log('이전 페이지 : '+g_prevPageNumber);
 	document.addEventListener("touchstart", function() {}, true);
 	//로딩 될 때
 	$(function(){
@@ -379,10 +381,16 @@
 			});
 		}
 
-		//윈도우 크기 변경 시 이벤트 (태블릿 회전 시 이벤트)
+		//윈도우 크기 변경 시 이벤트
 		$(window).on('resize', debounce(function(){
-			//가로, 세로 모드 변경시
-			reloadWithParams();
+			//(태블릿 가로, 세로 모드 회전 시
+			if(isTouchDevice){
+				pageReloadPost();
+			}
+			//pc 브라우저 변경 시
+			else{
+				location.reload();
+			}
 		}, 300)); // 300ms 후에 실행 (0.3초)
 	});
 
@@ -584,19 +592,34 @@
 
 	//URL 파라미터 값으로 페이지 넘기기
 	function turnPage(){
-		let pageNumber = new URLSearchParams(window.location.search).get('pno');
-		console.log('pageNumber:', pageNumber);
-		$('#book').turn('page', pageNumber);
+		/*let pageNumber = new URLSearchParams(window.location.search).get('pno');
+		console.log('pageNumber:', pageNumber);*/
+		console.log('pageNumber:', g_prevPageNumber);
+		$('#book').turn('page', g_prevPageNumber);
 	}
 
 	//파라미터 추가 및 페이지 새로 고침 함수
-	function reloadWithParams(){
+	/*function pageReloadGet(){
 		let pageNumber = g_pageNumber;
 		let url = new URL(window.location.href);
 		url.searchParams.set('pno', pageNumber);
 		window.location.href = url.toString();
-	}
+	}*/
 
+	function pageReloadPost(){
+		let url = new URL(window.location.href);
+		var insdoc = "";
+
+		insdoc+= "<input type='hidden' name='pno' value='"+ g_pageNumber +"'>";
+
+		var goform = $("<form>", {
+			method: "post",
+			action: url,
+			html: insdoc
+		}).appendTo("body");
+
+		goform.submit();
+	}
 </script>
 <body>
 <!-- 데스크톱, 노트북, 태블릿 영역 -->
