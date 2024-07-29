@@ -218,7 +218,7 @@
 		//ebook 출력
 		printSingleBook();
 
-		$('.toc-li').bind('touchstart', function (e) {
+		$('.toc-li').on('touchstart', function (e) {
 			$('#book-m').turn('page', $(this).val());
 			closeToc();
 		});
