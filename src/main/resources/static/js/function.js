@@ -82,7 +82,11 @@ function printDoubleBook() {
 				}
 
 				//목차 리스트 관련 이벤트 초기화
-				$('.toc-li').on('touchstart', function (e){
+				$('.toc-li').on('touchstart click', function (e){
+					e.preventDefault(); //현재 이벤트의 기본 동작 중단
+					e.stopPropagation(); //현재 이벤트의 상위 전파 중단
+					e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+
 					$('#book').turn('page', $(this).val());
 					closeToc();
 				});

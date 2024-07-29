@@ -349,7 +349,7 @@
 		printEbook();
 
 		//URL 파라미터 값으로 페이지 넘기기
-		turnPage();
+		//turnPage();
 
 		//터치 디바이스인지 확인
 		//let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
@@ -398,7 +398,7 @@
 		//윈도우 크기 변경 시 이벤트 (태블릿 회전 시 이벤트)
 		$(window).on('resize', debounce(function(){
 			//가로, 세로 모드 변경시
-			reloadWithParams();
+			//reloadWithParams();
 		}, 300)); // 300ms 후에 실행 (0.3초)
 	});
 
