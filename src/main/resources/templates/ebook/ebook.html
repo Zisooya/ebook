@@ -367,10 +367,13 @@
 			});
 
 			//목차 리스트 관련 이벤트 초기화
+/*
+
 			$('.toc-li').on('touchstart', function (e){
 				$('#book').turn('page', $(this).val());
 				closeToc();
 			});
+*/
 
 			//터치 이벤트를 통한 active 클래스 토글
 			$('.toc-wrap').on('touchstart', function(e) {
@@ -390,10 +393,13 @@
 				e.preventDefault(); // 터치 이벤트가 클릭 이벤트로 전파되는 것을 방지
 			});
 
+/*
 			$('.toc-li').on('click', function (e){
 				$('#book').turn('page', $(this).val());
 				closeToc();
 			});
+*/
+
 		}
 
 		//윈도우 크기 변경 시 이벤트
@@ -492,7 +498,6 @@
 //7p에 4번
 //8p부터는 변수
 //page+3p에 page번
-
 		 	if(checkOrientation() === 'double'){
 				//빈페이지 or 이미지맵(링크) 있는 페이지 별도 처리
 				if(page===2 || page===4 || page===6){
@@ -532,7 +537,6 @@
 					element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
 				}
 			}
-
 
 			let controller = '';
 
@@ -696,8 +700,18 @@
 		}
 
 		$('.toc-container').addClass('active');
-	}
 
+		// 터치 이벤트 추가
+		$('.toc-li').on('touchstart click', function(e) {
+			e.preventDefault(); //현재 이벤트의 기본 동작 중단
+			e.stopPropagation(); //현재 이벤트의 상위 전파 중단
+			e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+
+			$('#book').turn('page', $(this).val());
+
+			closeToc();
+		});
+	}
 </script>
 <body>
 <!-- 데스크톱, 노트북, 태블릿 영역 -->
