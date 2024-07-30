@@ -2,7 +2,7 @@ package com.jg.ebook.service;
 
 import com.jg.ebook.dto.response.ImageResponse;
 import com.jg.ebook.util.CommonUtil;
-import com.jg.ebook.util.PdfUtil;
+import com.jg.ebook.util.FileUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class MainService {
 
-	private final PdfUtil pdfUtil;
+	private final FileUtil fileUtil;
 
 	private final CommonUtil commonUtil;
 
@@ -28,17 +28,10 @@ public class MainService {
 	private String PROFILE;
 
 	public String[] getPdf(String fileName){
-		//return pdfUtil.getTextOfPdf(fileName);
-		return pdfUtil.getFileStr(fileName);
+		return fileUtil.getTextOfPdf(fileName);
 	}
 
 	public ImageResponse getEbookImageInfo(HttpServletRequest req){
-		/*String device = commonUtil.isDevice(req);
-		log.info("####################### device : "+device);
-
-		String device2 = commonUtil.isDevice2(req);
-		log.info("####################### device2 : "+device2);*/
-
 		//해당 폴더에 이미지 갯수를 구하는 로직
 		String imagePath = "";
 		if("local".equals(PROFILE)){
@@ -47,14 +40,14 @@ public class MainService {
 		else{
 			imagePath = "";
 		}
-		//imagePath = imagePath.concat(IMG_DIR).concat(device2);
+
 		imagePath = imagePath.concat(IMG_DIR);
 
 		File dir = new File(imagePath);
 		String[] extensions = new String[]{"jpg", "jpeg", "png", "gif"};
 		int imageCount = 0;
 
-		if (dir.exists() && dir.isDirectory()) {
+		if(dir.exists() && dir.isDirectory()){
 			imageCount = (int) Arrays.stream(dir.listFiles())
 					.filter(file -> {
 						String fileName = file.getName().toLowerCase();
@@ -65,7 +58,6 @@ public class MainService {
 		}
 
 		//화면에서 보여줄 이미지 경로
-		//imagePath = IMG_DIR.concat(device2).concat("/").concat(device2).concat("_");
 		imagePath = IMG_DIR;
 		ImageResponse imageResponse = new ImageResponse();
 		imageResponse.setImageCount(imageCount);

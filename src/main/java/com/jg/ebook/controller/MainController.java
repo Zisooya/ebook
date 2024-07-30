@@ -40,9 +40,9 @@ public class MainController {
     }
 
     @RequestMapping(value = {"/ebook"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String ebookPage(HttpServletRequest req, Model model, @RequestParam(value = "pno", required = false) String pno){
+    public String ebookPage(HttpServletRequest req, Model model, @RequestParam(value = "pageNumber", required = false) String pageNumber){
         model.addAttribute("ebookImageInfo", mainService.getEbookImageInfo(req));
-        model.addAttribute("pno", pno);
+        model.addAttribute("pageNumber", pageNumber);
         return "ebook/ebook";
     }
 

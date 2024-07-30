@@ -1,6 +1,6 @@
 package com.jg.ebook;
 
-import com.jg.ebook.util.PdfUtil;
+import com.jg.ebook.util.FileUtil;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -34,7 +31,7 @@ class EbookApplicationTests {
 	@SneakyThrows
 	public void getTextOfPdf(){
 		// pdf 파일 경로
-		String pdfName = "e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록".concat(".").concat(PdfUtil.PDF_EXTENSION.toLowerCase());
+		String pdfName = "e-book용_ 공연 _훔친 개 훔친 아기 Stolen baby, Stolen dog_의 기록".concat(".").concat(FileUtil.PDF_EXTENSION.toLowerCase());
 		String pdfPath = PDF_DIR.concat(pdfName);
 
 		//PDFBox 설정

@@ -10,7 +10,7 @@ public class CommonUtil {
 
 	private static UserAgentAnalyzer userAgentAnalyzer;
 
-	public CommonUtil() {
+	public CommonUtil(){
 		userAgentAnalyzer = UserAgentAnalyzer.newBuilder().hideMatcherLoadStats().withCache(10000).build();
 	}
 
@@ -38,14 +38,14 @@ public class CommonUtil {
 	 */
 	public static String isDevice2(HttpServletRequest req){
 		String userAgentString = req.getHeader("User-Agent");
-		if (userAgentString == null || userAgentString.isEmpty()) {
+		if(userAgentString == null || userAgentString.isEmpty()){
 			return "User-Agent header is missing";
 		}
 
 		UserAgent userAgent = userAgentAnalyzer.parse(userAgentString);
 		String deviceClass = userAgent.getValue("DeviceClass");
 
-		switch (deviceClass) {
+		switch(deviceClass){
 			case "Desktop":
 				return "pc";
 			case "Phone":

@@ -339,8 +339,11 @@
 	}
 </style>
 <script th:inline="javascript">
-	let g_ebookImageInfo = /*[[${ebookImageInfo}]]*/ 0;
-	let g_prevPageNumber = /*[[${pno}]]*/ 0;
+	//터치 디바이스인지 확인
+	const g_isTouchDevice = window.matchMedia("(hover: none)").matches;
+
+	const g_ebookImageInfo = /*[[${ebookImageInfo}]]*/ 0;
+	const g_prevPageNumber = /*[[${pageNumber}]]*/ 0;
 	let g_pageNumber;
 
 	const g_blankPages = [2, 4, 6, 28];	//더블 모드에서 빈 페이지로 설정할 페이지
@@ -357,43 +360,31 @@
 		}
 	]
 
-	console.log('이전 페이지 : '+g_prevPageNumber);
 	//로딩 될 때
 	$(function(){
 		//기기별 ebook 출력
 		printEbook();
 
-		//URL 파라미터 값으로 페이지 넘기기
-		turnPage();
-
-		//터치 디바이스인지 확인
-		//let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
-		let isTouchDevice = window.matchMedia("(hover: none)").matches;
+		//화면 전환 전에 보던 페이지 출력
+		if(!isEmpty(g_prevPageNumber)){
+			reloadKeepPage();
+		}
 
 		//터치 디바이스인 경우(태블릿)
-		if(isTouchDevice){
+		if(g_isTouchDevice){
 			//목차 아아콘 터치 이벤트
-			$('.toc-icon').on('touchstart', function (e){
-                e.preventDefault(); //현재 이벤트의 기본 동작 중단
-                e.stopPropagation(); //현재 이벤트의 상위 전파 중단
-                e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
-                openToc();
+			$('.toc-icon').on('touchstart', function(e){
+				e.preventDefault();				//현재 이벤트의 기본 동작 중단
+				e.stopPropagation();			//현재 이벤트의 상위 전파 중단
+				e.stopImmediatePropagation();	//현재 이벤트의 현재 레벨 전파 중단
+				openToc();
 			});
-
-			//목차 리스트 관련 이벤트 초기화
-/*
-
-			$('.toc-li').on('touchstart', function (e){
-				$('#book').turn('page', $(this).val());
-				closeToc();
-			});
-*/
 
 			//터치 이벤트를 통한 active 클래스 토글
-			$('.toc-wrap').on('touchstart', function(e) {
-				e.preventDefault(); //현재 이벤트의 기본 동작 중단
-				e.stopPropagation(); //현재 이벤트의 상위 전파 중단
-				e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+			$('.toc-wrap').on('touchstart', function(e){
+				e.preventDefault();				//현재 이벤트의 기본 동작 중단
+				e.stopPropagation();			//현재 이벤트의 상위 전파 중단
+				e.stopImmediatePropagation();	//현재 이벤트의 현재 레벨 전파 중단
 
 				$(this).toggleClass('active');
 				$('.toc-wrap .toc-icon').toggleClass('active');
@@ -402,25 +393,17 @@
 		//마우스 디바이스인 경우(PC)
 		else{
 			//목차 아이콘 터치 이벤트
-			$('.toc-icon').on('click', function (e){
+			$('.toc-icon').on('click', function(e){
 				openToc();
 				e.preventDefault(); // 터치 이벤트가 클릭 이벤트로 전파되는 것을 방지
 			});
-
-/*
-			$('.toc-li').on('click', function (e){
-				$('#book').turn('page', $(this).val());
-				closeToc();
-			});
-*/
-
 		}
 
 		//윈도우 크기 변경 시 이벤트
 		$(window).on('resize', debounce(function(){
 			//(태블릿 가로, 세로 모드 회전 시
-			if(isTouchDevice){
-				pageReloadPost();
+			if(g_isTouchDevice){
+				reloadPost(); //화면 전환 시 현재 페이지 값 POST 방식으로 전송
 			}
 			//pc 브라우저 변경 시
 			else{
@@ -438,34 +421,35 @@
 		};
 	}
 
-	//태블릿 orientation 체크
-	function checkOrientation(){
+	//페이지 모드 체크
+	function checkPageMode(){
+		//세로 모드
 		if(window.matchMedia("(orientation: portrait)").matches){
-			//세로 모드
 			return 'single';
 		}
+		//가로 모드
 		else if(window.matchMedia("(orientation: landscape)").matches){
-			//가로 모드
 			return 'double';
 		}
+		//pc 가로 모드
 		else{
-			//pc 가로 모드
 			return 'double';
 		}
 	}
 
+	//기기별 ebook 출력
 	function printEbook(){
-		if(checkOrientation() === 'single'){
+		if(checkPageMode() === 'single'){
 			printSingleBook();
 		}
-		else if(checkOrientation() === 'double'){
+		else if(checkPageMode() === 'double'){
 			printDoubleBook();
 		}
 		else{}
 	}
 
-	//키보드 화살표 페이지 이동 이벤트
-	$(window).on('keydown', function (e){
+	//키보드 화살표 페이지 이동
+	$(window).on('keydown', function(e){
 		if(e.target && e.target.tagName.toLowerCase() != 'input'){
 			if(e.keyCode == 37)
 				$('#book').turn('previous');
@@ -474,7 +458,7 @@
 		}
 	});
 
-	//책 페이지 넘기기 이벤트
+	//책 페이지 클릭 시 이동
 	function turnBook(oddOrEven){
 		if(oddOrEven === 'odd'){
 			$('#book').turn('previous');
@@ -485,20 +469,22 @@
 		else{}
 	}
 
-	function addPage(page, book) {
+	//book 요소에 page 추가하는 함수
+	function addPage(page, book){
 		const ebookImageInfo = g_ebookImageInfo;
 		const numberOfPages = ebookImageInfo.imageCount; //전체 페이지 수
 		const imagePath = ebookImageInfo.imagePath;
 
-		if (!book.turn('hasPage', page)) { //페이지가 이미 책에 있는지 체크
+		if(!book.turn('hasPage', page)){ //페이지가 이미 책에 있는지 체크
 			let element; //페이지를 위한 요소
-			const pageMode = checkOrientation(); //페이지 모드
+			const pageMode = checkPageMode(); //페이지 모드
 			const oddOrEven = (page % 2 === 0) ? 'odd' : 'even'; //홀수 or 짝수 페이지
 
 			// 페이지 요소 생성
-			if (pageMode === 'single') {
+			if(pageMode === 'single'){
 				element = $('<div />', { 'class': 'page', 'id': 'page-' + page }).html('<i class="loader"></i>');
-			} else if (pageMode === 'double') {
+			}
+			else if(pageMode === 'double'){
 				element = $('<div />', { 'class': `page ${oddOrEven}`, 'id': 'page-' + page, 'onclick': `turnBook('${oddOrEven}')` }).html('<i class="loader"></i>');
 			}
 
@@ -513,18 +499,19 @@
 		}
 	}
 
-	function setPageContent(element, page, imagePath) {
-		const pageMode = checkOrientation(); //페이지 모드
-		let blankPages = g_blankPages; //더블 모드에서 빈 페이지로 설정할 페이지
-		let imageMapInfos = g_imageMapInfos; //이미지맵이 포함되어야 하는 이미지에 대한 정보
+	//해당 요소에 페이지 컨텐츠 삽입
+	function setPageContent(element, page, imagePath){
+		const pageMode = checkPageMode();	//페이지 모드
+		let blankPages = g_blankPages;		//더블 모드에서 빈 페이지로 설정할 페이지
+		let imageMapInfos = g_imageMapInfos;//이미지맵이 포함되어야 하는 이미지에 대한 정보
 
-		if (pageMode === 'double') {
+		if(pageMode === 'double'){
 			//빈 페이지인 경우
-			if (blankPages.includes(page)){
+			if(blankPages.includes(page)){
 				element.html(`<div id="data_${page}" class="blankPage"></div>`);
 			}
 			//빈 페이지 아닌 경우
-			else if (!blankPages.includes(page)){
+			else if(!blankPages.includes(page)){
 				//현재 페이지 전에 있는 빈 페이지 개수 (해당 값만큼 페이지에 뿌려줄 이미지명 번호를 미뤄주기 위한 값)
 				let currentBlankPageCount = blankPages.filter(bp => bp < page).length;
 				let fileName = page-currentBlankPageCount;
@@ -535,62 +522,64 @@
 					let mapHref = mapInfo.href;
 					let mapCoords = mapInfo.coords;
 					element.html(`<img id="data_${page}" src="${imagePath + fileName}.png" alt="${page}" usemap="#image-map-${page}" style="width:100%; height: auto; z-index:9999999999!important;">
-            					 <map id="image-map-${page}" name="image-map-${page}">
-            					 	<area target="_blank" alt="${mapHref}" title="${mapHref}" href="${mapHref}" coords="${mapCoords}" shape="rect">
-            					 </map>`);
+								  <map id="image-map-${page}" name="image-map-${page}">
+									  <area target="_blank" alt="${mapHref}" title="${mapHref}" href="${mapHref}" coords="${mapCoords}" shape="rect">
+								  </map>`);
 				}
 				//이미지맵이 없는 페이지 출력
-				else {
+				else{
 					element.html(`<img id="data_${page}" src="${imagePath + fileName}.png">`);
 				}
 			}
 		}
-		else if (pageMode === 'single') {
+		else if(pageMode === 'single'){
 			//이미지맵이 있는 페이지 출력
-			if (imageMapInfos.some(info => info.fileName === page)) {
+			if(imageMapInfos.some(info => info.fileName === page)){
 				let mapInfo = imageMapInfos.find(info => info.fileName === page);
 				let mapHref = mapInfo.href;
 				let mapCoords = mapInfo.coords;
 
 				element.html(`<img id="data_${page}" src="${imagePath + page}.png" alt="${page}" usemap="#image-map-${page}" style="width:100%; height: auto; z-index:9999999999!important;">
-            					 <map id="image-map-${page}" name="image-map-${page}">
-            					 	<area target="_blank" alt="${mapHref}" title="${mapHref}" href="${mapHref}" coords="${mapCoords}" shape="rect">
-            					 </map>`);
+							  <map id="image-map-${page}" name="image-map-${page}">
+								  <area target="_blank" alt="${mapHref}" title="${mapHref}" href="${mapHref}" coords="${mapCoords}" shape="rect">
+							  </map>`);
 			}
 			//이미지맵이 없는 페이지 출력
-			else {
+			else{
 				element.html(`<img id="data_${page}" src="${imagePath + page}.png">`);
 			}
 		}
 	}
 
 	//페이지 모드에 따라 전자책 하단의 컨트롤러를 반환하는 함수
-	function getPageController(page, numberOfPages, pageMode) {
-		if (pageMode === 'single') {
+	function getPageController(page, numberOfPages, pageMode){
+		if(pageMode === 'single'){
 			return `
-            <div id="controls">
-                <div class="page-navi">
-                    <label for="page-number"></label>
-                    <input type="text" id="page-number" value="${page}" readonly />
-                    /<span class="number-pages">${numberOfPages}</span>
-                </div>
-                <div class="toc-icon" ontouchstart="openToc()">
-                    <span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>
-                </div>
-            </div>`;
-		} else if (pageMode === 'double') {
+			<div id="controls">
+				<div class="page-navi">
+					<label for="page-number"></label>
+					<input type="text" id="page-number" value="${page}" readonly />
+					/<span class="number-pages">${numberOfPages}</span>
+				</div>
+				<div class="toc-icon" ontouchstart="openToc()">
+					<span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>
+				</div>
+			</div>`;
+		}
+		else if(pageMode === 'double'){
 			return `
-            <div id="controls">
-                <div class="page-navi">
-                    <label for="page-number"></label>
-                    <input type="text" id="page-number" value="${page}" />
-                    /<span class="number-pages">${numberOfPages + g_blankPages.length}</span>
-                </div>
-            </div>`;
+			<div id="controls">
+				<div class="page-navi">
+					<label for="page-number"></label>
+					<input type="text" id="page-number" value="${page}" />
+					/<span class="number-pages">${numberOfPages + g_blankPages.length}</span>
+				</div>
+			</div>`;
 		}
 		return '';
 	}
 
+	//책 출력하는 함수 - single 모드
 	function printSingleBook(){
 		let ebookImageInfo = g_ebookImageInfo;
 		let numberOfPages = ebookImageInfo.imageCount;
@@ -598,14 +587,14 @@
 		//책 생성 및 출력
 		$('#book').turn({
 			display: 'single',
-			duration: 400,  //페이지 전환 효과 0.4초
-			elevation: 50,  //페이지 쌓임 효과
-			acceleration: true, //하드웨어 가속 모드를 설정
-			pages: numberOfPages,   //전체 페이지 수
-			gradients: true,  //그라데이션 모드 설정
-			when: { //turn 이벤트 옵션 정의
+			duration: 400,			//페이지 전환 효과 0.4초
+			elevation: 50,			//페이지 쌓임 효과
+			acceleration: true,		//하드웨어 가속 모드를 설정
+			pages: numberOfPages,	//전체 페이지 수
+			gradients: true,		//그라데이션 모드 설정
+			when: {					//turn 이벤트 옵션 정의
 				//페이지가 출력되기 전 실행
-				turning: function (e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+				turning: function(e, page, view){	//e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
 					//메모리 보관에 필요한 책의 페이지 범위를 가져옴
 					let range = $(this).turn('range', page);
 
@@ -615,7 +604,7 @@
 					}
 				},
 				//페이지가 출력된 후 실행
-				turned: function (e, page){
+				turned: function(e, page){
 					//페이지 리로드시 사용할 페이지 변수
 					g_pageNumber = page;
 
@@ -628,9 +617,9 @@
 
 						//이미지맵 링크 터치 이벤트
 						$('area').on('touchstart', function(e){
-							e.preventDefault(); //현재 이벤트의 기본 동작 중단
-							e.stopPropagation(); //현재 이벤트의 상위 전파 중단
-							e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+							e.preventDefault();				//현재 이벤트의 기본 동작 중단
+							e.stopPropagation();			//현재 이벤트의 상위 전파 중단
+							e.stopImmediatePropagation();	//현재 이벤트의 현재 레벨 전파 중단
 
 							let href = $(this).attr('href');
 							window.open(href, '_blank');
@@ -638,12 +627,12 @@
 					}
 
 					//책 터치시 페이지 넘김 이벤트
-					$('#data_' + page).on('touchstart', function (e){
+					$('#data_' + page).on('touchstart', function(e){
 						console.log('Event triggered:', e.type);
 
-						e.preventDefault(); //현재 이벤트의 기본 동작 중단
-						e.stopPropagation(); //현재 이벤트의 상위 전파 중단
-						e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+						e.preventDefault();				//현재 이벤트의 기본 동작 중단
+						e.stopPropagation();			//현재 이벤트의 상위 전파 중단
+						e.stopImmediatePropagation();	//현재 이벤트의 현재 레벨 전파 중단
 
 						//터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
 						//getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
@@ -660,7 +649,6 @@
 						else{
 							$('#book').turn('next');
 						}
-
 					});
 				}
 			}
@@ -669,35 +657,26 @@
 		$('.number-pages').html(numberOfPages); //전체 페이지수 출력
 	}
 
-	//URL 파라미터 값으로 페이지 넘기기
-	function turnPage(){
-		/*let pageNumber = new URLSearchParams(window.location.search).get('pno');
-		console.log('pageNumber:', pageNumber);*/
-		console.log('pageNumber:', g_prevPageNumber);
+	//화면 전환 전에 보던 페이지 출력
+	function reloadKeepPage(){
+		console.log('이전 페이지 : ', g_prevPageNumber);
 		$('#book').turn('page', g_prevPageNumber);
 	}
 
-	//파라미터 추가 및 페이지 새로 고침 함수
-	/*function pageReloadGet(){
-		let pageNumber = g_pageNumber;
+	//화면 전환 시 현재 페이지 값 POST 방식으로 전송
+	function reloadPost(){
 		let url = new URL(window.location.href);
-		url.searchParams.set('pno', pageNumber);
-		window.location.href = url.toString();
-	}*/
+		let element = '';
 
-	function pageReloadPost(){
-		let url = new URL(window.location.href);
-		var insdoc = "";
+		element+= '<input type="hidden" name="pageNumber" value="'+ g_pageNumber +'">';
 
-		insdoc+= "<input type='hidden' name='pno' value='"+ g_pageNumber +"'>";
-
-		var goform = $("<form>", {
-			method: "post",
+		let goForm = $('<form>', {
+			method: 'post',
 			action: url,
-			html: insdoc
-		}).appendTo("body");
+			html: element
+		}).appendTo('body');
 
-		goform.submit();
+		goForm.submit();
 	}
 
 	/**
@@ -705,8 +684,8 @@
 	 * @author zisooya
 	 * @returns {void}
 	 */
-	function openToc() {
-		if(checkOrientation() === 'single') {
+	function openToc(){
+		if(checkPageMode() === 'single'){
 			$('#toc-ul').html('\t\t\t\t<li class="toc-li" value="1">일러스트<span>1p</span></li>\n' +
 							  '\t\t\t\t<li class="toc-li" value="2">크레딧<span>2p</span></li>\n' +
 							  '\t\t\t\t<li class="toc-li" value="3">처음으로<span>3p</span></li>\n' +
@@ -714,7 +693,7 @@
 							  '\t\t\t\t<li class="toc-li" value="25">저자 소개<span>25p</span></li>\n' +
 							  '\t\t\t\t<li class="toc-li" value="26">공연 정보<span>26p</span></li>\n');
 		}
-		else if(checkOrientation() === 'double') {
+		else if(checkPageMode() === 'double'){
 			$('#toc-ul').html('\t\t\t\t<li class="toc-li" value="1">일러스트<span>1p</span></li>\n' +
 							  '\t\t\t\t<li class="toc-li" value="3">크레딧<span>3p</span></li>\n' +
 							  '\t\t\t\t<li class="toc-li" value="5">처음으로<span>5p</span></li>\n' +
@@ -726,10 +705,10 @@
 		$('.toc-container').addClass('active');
 
 		//목차 리스트 터치시 해당 페이지로 이동하는 이벤트 추가
-		$('.toc-li').on('touchstart click', function(e) {
-			e.preventDefault(); //현재 이벤트의 기본 동작 중단
-			e.stopPropagation(); //현재 이벤트의 상위 전파 중단
-			e.stopImmediatePropagation(); //현재 이벤트의 현재 레벨 전파 중단
+		$('.toc-li').on('touchstart click', function(e){
+			e.preventDefault();				//현재 이벤트의 기본 동작 중단
+			e.stopPropagation();			//현재 이벤트의 상위 전파 중단
+			e.stopImmediatePropagation();	//현재 이벤트의 현재 레벨 전파 중단
 
 			$('#book').turn('page', $(this).val());
 
@@ -741,7 +720,6 @@
 <!-- 데스크톱, 노트북, 태블릿 영역 -->
 <div class="wrap">
 	<div id="book">
-		<!--<div class="cover"><h1>The Bible</h1></div>-->
 	</div>
 	<div class="toc-wrap">
 		<div id="toc-page-navi">

@@ -10,15 +10,11 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class PdfUtil {
+public class FileUtil {
 
 	final public static String PDF_EXTENSION = "PDF";		//파일 확장자
 
@@ -26,7 +22,7 @@ public class PdfUtil {
 	private String PDF_DIR;
 
 	@SneakyThrows
-	public String[] getFileStr(String fileName) {
+	public String[] getFileStr(String fileName){
 		// txt 파일 경로
 		String pdfName = fileName.concat(".").concat("txt");
 		String pdfPath = PDF_DIR.concat(pdfName);
@@ -42,10 +38,10 @@ public class PdfUtil {
 		String[] strArr = str.split("—");
 
 		for(int i=0; i<strArr.length; i++) {
-			System.out.println("=============== start =================");
-			System.out.println(i);
-			System.out.println(strArr[i]);
-			System.out.println("=============== end =================");
+			log.info("=============== start =================");
+			log.info(String.valueOf(i));
+			log.info(strArr[i]);
+			log.info("=============== end =================");
 		}
 
 		br.close();
@@ -56,16 +52,13 @@ public class PdfUtil {
 	@SneakyThrows
 	public String[] getTextOfPdf(String fileName){
 		// pdf 파일 경로
-		String pdfName = fileName.concat(".").concat(PdfUtil.PDF_EXTENSION.toLowerCase());
+		String pdfName = fileName.concat(".").concat(FileUtil.PDF_EXTENSION.toLowerCase());
 		String pdfPath = PDF_DIR.concat(pdfName);
 
 		//PDFBox 설정
 		InputStream stream = new FileInputStream(new File(pdfPath));
 		PDDocument document = PDDocument.load(stream);
 		PDFTextStripper stripper =  new PDFTextStripper();
-		//"\n" for linux or "\r\n" for Windows
-		//stripper.setAddMoreFormatting(true);
-		//stripper.setLineSeparator("\n");
 
 		//텍스트 추출
 		String extractText = stripper.getText(document);

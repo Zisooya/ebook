@@ -214,23 +214,23 @@
 	let g_ebookImageInfo = /*[[${ebookImageInfo}]]*/ 0;
 
 	//로딩 될 때
-	$(function () {
+	$(function(){
 		//ebook 출력
 		printSingleBook();
 
-		$('.toc-li').on('touchstart', function (e) {
+		$('.toc-li').on('touchstart', function(e){
 			$('#book-m').turn('page', $(this).val());
 			closeToc();
 		});
 	});
 
 	//book 요소에 page 추가하는 함수
-	function addPage(page, book) {
-		let ebookImageInfo = g_ebookImageInfo;
-		let numberOfPages = ebookImageInfo.imageCount;	//전체 페이지수
-		let imagePath = ebookImageInfo.imagePath;		//ebook 이미지 경로
+	function addPage(page, book){
+		const ebookImageInfo = g_ebookImageInfo;
+		const numberOfPages = ebookImageInfo.imageCount; //전체 페이지수
+		const imagePath = ebookImageInfo.imagePath; //ebook 이미지 경로
 
-		if (!book.turn('hasPage', page)) { //페이지가 이미 책에 있는지 체크
+		if(!book.turn('hasPage', page)){ //페이지가 이미 책에 있는지 체크
 			//페이지를 위한 요소
 			let element;
 			element = $('<div />', {'class': 'page', 'id': 'page-' + page}).html('<i class="loader"></i>');
@@ -242,25 +242,25 @@
 			if(page === 25){
 				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
 			}
-			else if(page === 26) {
+			else if(page === 26){
 				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
 			}
-			else {
+			else{
 				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'">');
 			}
 
 			let controller;
 
 			//페이지 컨트롤러 삽입
-			controller = '    <div id="controls-m">\n' +
-
-				'        <div class="page-navi">\n' +
-				'            <label for="page-number"></label> <input type="text" class="page-number" value="' + page + '" readonly>/<span class="number-pages">' + numberOfPages + '</span>\n' +
-				'        </div>\n' +
-				'        <div class="toc-icon" ontouchstart="openToc()">\n' +
-				'            <span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>\n' +
-				'        </div>\n' +
-				'    </div>';
+			controller = '' +
+				'	<div id="controls-m">\n' +
+				'		<div class="page-navi">\n' +
+				'			<label for="page-number"></label> <input type="text" class="page-number" value="' + page + '" readonly>/<span class="number-pages">' + numberOfPages + '</span>\n' +
+				'		</div>\n' +
+				'		<div class="toc-icon" ontouchstart="openToc()">\n' +
+				'			<span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>\n' +
+				'		</div>\n' +
+				'	</div>';
 
 			element.append(controller);
 		}
