@@ -33,28 +33,22 @@
 </head>
 <style>
 	html {
-		width: 100vw;
+		width: 100dvw;
 		height: 100dvh;
 		background:#EAEAEA;
 		position: relative;
 		overflow: hidden;
 	}
 
-	body {
-	}
-
 	#mobile-wrap {
 		width: 100%;
-		height: calc((100vw * 1.414) + 30px); /* 30px은 #control-m 영역 */
+		height: calc((100dvw * 1.414) + 30px); /* 30px은 #control-m 영역 */
 		box-sizing: border-box;
 
 		/* 수직 가운데 정렬 */
 		position: absolute;
 		top: 50%;
 		transform: translate(0, -50%);
-
-		/*position: fixed;	!* 스크롤 고정 *!*/
-		/*overflow: hidden;	!* 스크롤 고정 *!*/
 	}
 
 	#book-m {
@@ -155,15 +149,16 @@
 
 	#toc-action-sheet-m {
 		width: 100%;
-		max-height: 100vh;
+		max-height: 100dvh;
+
 		/* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
 		position: relative;
-		bottom: -100vh;
+		bottom: -100dvh;
 		transition: 0.5s;
 	}
 
 	.toc-container.active #toc-action-sheet-m {
-		/* 아래에서 위로 나타나는 효과, max-height과 동일하게 작성 */
+		/* 아래에서 위로 나타나는 효과 */
 		bottom: 0;
 	}
 
@@ -196,7 +191,7 @@
 	@media( orientation: landscape ) {
 		html {
 			width: 100dvh;
-			height: 100vw;
+			height: 100dvw;
 			transform: rotate(-90deg);
 			transform-origin: top left;
 			position: absolute;
@@ -205,15 +200,26 @@
 		}
 
 		#mobile-wrap {
-			width: 100vh;
-			height: calc((100vh * 1.414) + 30px);
+			width: 100dvh;
+			height: calc((100dvh * 1.414) + 30px);
 		}
 	}
 </style>
 <script th:inline="javascript">
-	let g_ebookImageInfo = /*[[${ebookImageInfo}]]*/ 0;
+	//ebook에 출력될 이미지 정보
+	const g_ebookImageInfo = /*[[${ebookImageInfo}]]*/ 0;
+	//이미지맵이 포함되어야 하는 이미지에 대한 정보
+	const g_imageMapInfos = [
+		{	fileName: 25,
+			href: 'http://www.shinhooyhi.com',
+			coords: '655,2077,264,2017'
+		},
+		{	fileName: 26,
+			href: 'https://www.shinhooyhi.com/stolen-baby-stolen-dog',
+			coords: '87,151,1052,248'
+		}
+	]
 
-	//로딩 될 때
 	$(function(){
 		//ebook 출력
 		printSingleBook();
@@ -228,7 +234,8 @@
 	function addPage(page, book){
 		const ebookImageInfo = g_ebookImageInfo;
 		const numberOfPages = ebookImageInfo.imageCount; //전체 페이지수
-		const imagePath = ebookImageInfo.imagePath; //ebook 이미지 경로
+		const imagePath = ebookImageInfo.imagePath;		 //ebook 이미지 경로
+		let imageMapInfos = g_imageMapInfos;			 //이미지맵이 포함되어야 하는 이미지에 대한 정보
 
 		if(!book.turn('hasPage', page)){ //페이지가 이미 책에 있는지 체크
 			//페이지를 위한 요소
@@ -238,15 +245,19 @@
 			//page에 element 요소를 추가
 			book.turn('addPage', element, page);
 
-			//이미지맵(링크) 있는 페이지 별도 처리
-			if(page === 25){
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
+			//이미지맵이 있는 페이지 출력
+			if(imageMapInfos.some(info => info.fileName === page)){
+				let mapInfo = imageMapInfos.find(info => info.fileName === page);
+				let mapHref = mapInfo.href;
+				let mapCoords = mapInfo.coords;
+				element.html(`<img id="data_${page}" src="${imagePath + page}.png" alt="${page}" usemap="#image-map-${page}" style="width:100%; height: auto; z-index:9999999999!important;">
+								  <map id="image-map-${page}" name="image-map-${page}">
+									  <area target="_blank" alt="${mapHref}" title="${mapHref}" href="${mapHref}" coords="${mapCoords}" shape="rect">
+								  </map>`);
 			}
-			else if(page === 26){
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
-			}
+			//이미지맵이 없는 페이지 출력
 			else{
-				element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'">');
+				element.html(`<img id="data_${page}" src="${imagePath + page}.png" alt="${page}">`);
 			}
 
 			let controller;
@@ -264,6 +275,105 @@
 
 			element.append(controller);
 		}
+	}
+
+	//single 페이지 모드 책 출력
+	function printSingleBook(){
+		let ebookImageInfo = g_ebookImageInfo;
+		let imageMapInfos = g_imageMapInfos; //이미지맵이 포함되어야 하는 이미지에 대한 정보
+		let numberOfPages = ebookImageInfo.imageCount;
+
+		//모바일 영역 활성화
+		$('#mobile-wrap').css('display', 'block');
+		$('.wrap').css('display', 'none');
+
+		//책 생성 및 출력
+		$('#book-m').turn({
+			display: 'single',
+			duration: 400,			//페이지 전환 효과 0.4초
+			elevation: 50,			//페이지 쌓임 효과
+			acceleration: true,		//하드웨어 가속 모드를 설정
+			pages: numberOfPages,	//전체 페이지 수
+			gradients: true,		//그라데이션 모드 설정
+			when: {					//turn 이벤트 옵션 정의
+				//페이지가 출력되기 전 실행
+				turning: function(e, page, view){ //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
+					//메모리 보관에 필요한 책의 페이지 범위를 가져옴
+					let range = $(this).turn('range', page);
+
+					//각 페이지가 책의 범위에 속하는 지 확인후 반복 추가
+					for(page = range[0]; page <= range[1]; page++){
+						addPage(page, $(this));
+					}
+				},
+				//페이지가 출력된 후 실행
+				turned: function(e, page){
+					$('.page-number').val(page);
+
+					//이미지맵(링크) 있는 페이지
+					if(imageMapInfos.some(info => info.fileName === page)){
+						//반응형 이미지맵 좌표 조정
+						$('map').imageMapResize();
+
+						//이미지맵 링크 터치 이벤트
+						$('area').on('touchstart', function(e){
+							e.preventDefault();				//현재 이벤트의 기본 동작 중단
+							e.stopPropagation();			//현재 이벤트의 상위 전파 중단
+							e.stopImmediatePropagation();	//현재 이벤트의 현재 레벨 전파 중단
+
+							let href = $(this).attr('href');
+							window.open(href, '_blank');
+						});
+					}
+
+					//책 터치시 페이지 넘김 이벤트
+					$('#data_' + page).on('touchstart', function(e){
+						console.log('Event triggered:', e.type);
+
+						e.preventDefault();				//현재 이벤트의 기본 동작 중단
+						e.stopPropagation();			//현재 이벤트의 상위 전파 중단
+						e.stopImmediatePropagation();	//현재 이벤트의 현재 레벨 전파 중단
+
+						let orientation = screen.orientation.type.includes('portrait') ? 'portrait' : 'landscape';
+						//getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
+						let offset = e.target.getBoundingClientRect();
+
+						//세로 길게 방향이면 X축 기준 이벤트
+						if(orientation === 'portrait'){
+							//터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
+							let offsetX = e.touches[0].clientX - offset.x;
+
+							let half = $(this).width()/2;
+
+							//책의 왼쪽 클릭시 이전 페이지 이동
+							if(offsetX < half){
+								$('#book-m').turn('previous');
+							}
+							//책의 오른쪽 클릭시 다음 페이지 이동
+							else{
+								$('#book-m').turn('next');
+							}
+						}
+						//가로 길게 방향이면 Y축 기준 이벤트
+						else{
+							let offsetY = e.touches[0].clientY - offset.y;
+							let half = $(this).height()/2;
+
+							//책의 왼쪽 클릭시 이전 페이지 이동
+							if(offsetY < half){
+								$('#book-m').turn('next');
+							}
+							//책의 오른쪽 클릭시 다음 페이지 이동
+							else{
+								$('#book-m').turn('previous');
+							}
+						}
+					});
+				}
+			}
+		});
+
+		$('.number-pages').html(numberOfPages); //전체 페이지수 출력
 	}
 </script>
 <body>
