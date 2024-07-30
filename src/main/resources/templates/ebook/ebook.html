@@ -670,9 +670,8 @@
 		let blankPages = g_blankPages; //더블 모드에서 빈 페이지로 설정할 페이지
 		let currentBlankPageCount = checkPageMode() === 'single' ? blankPages.filter(bp => bp < g_pageNumber).length : singleBlankPages.filter(bp => bp < g_pageNumber).length;
 		let pageNumber = checkPageMode() === 'single' ? g_pageNumber-currentBlankPageCount : g_pageNumber+currentBlankPageCount;
-		alert(checkPageMode()+' // '+pageNumber);
-		let element = '';
 
+		let element = '';
 		element+= '<input type="hidden" name="pageNumber" value="'+ pageNumber +'">';
 
 		let goForm = $('<form>', {
