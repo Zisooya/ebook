@@ -38,21 +38,22 @@ function cfn_ajaxRequest(url, method, data, callbackId){
  */
 function printDoubleBook() {
 	let ebookImageInfo = g_ebookImageInfo;
-	let numberOfPages = ebookImageInfo.imageCount;
+	let blankPages = g_blankPages; //더블 모드에서 빈 페이지로 설정할 페이지
+	let imageMapInfos = g_imageMapInfos; //이미지맵이 포함되어야 하는 이미지에 대한 정보
+	let numberOfPages = ebookImageInfo.imageCount + blankPages.length; //전체 페이지 수
+
 	//모바일 영역 비활성화
 	$('#mobile-wrap').css('display', 'none');
 
 	//책 생성 및 출력
 	$('#book').turn({
 		acceleration: true, //하드웨어 가속 모드를 설정
-		pages: numberOfPages+3,   //전체 페이지 수
+		pages: numberOfPages, //전체 페이지 수
 		elevation: 50,  //페이지 쌓임 효과
-		//gradients: !$.isTouch,  //그라데이션 모드 설정
 		gradients: true,  //그라데이션 모드 설정
 		when: { //turn 이벤트 옵션 정의
 			//페이지가 출력되기 전 실행
 			turning: function (e, page, view) { //e: 이벤트 객체, page: 새로운 페이지 번호, view: 새로운 뷰
-
 				//메모리 보관에 필요한 책의 페이지 범위를 가져옴
 				let range = $(this).turn('range', page);
 
@@ -66,7 +67,11 @@ function printDoubleBook() {
 				g_pageNumber = page;
 
 				//이미지맵(링크) 있는 페이지
-				if(page === 28 || page === 29){
+				//현재 페이지 전에 있는 빈 페이지 개수 (해당 값만큼 페이지에 뿌려줄 이미지명 번호를 미뤄주기 위한 값)
+				let currentBlankPageCount = blankPages.filter(bp => bp < page).length;
+				let fileName = page-currentBlankPageCount;
+
+				if(imageMapInfos.some(info => info.fileName === fileName)){
 					//반응형 이미지맵 좌표 조정
 					$('map').imageMapResize();
 
@@ -91,20 +96,8 @@ function printDoubleBook() {
 		}
 	});
 
-	$('.number-pages').html((numberOfPages+3)); //전체 페이지수 출력
-	$('#toc-number-pages').html((numberOfPages+3)); //전체 페이지수 출력
-
-	$('#left-page-number').keydown(function (e) {
-		if (e.keyCode === 13) {
-			// $('#book').turn('page', $('#left-page-number').val()-1);
-		}
-	});
-
-	$('#right-page-number').keydown(function (e) {
-		if (e.keyCode === 13) {
-			//  $('#book').turn('page', $('#right-page-number').val());
-		}
-	});
+	$('.number-pages').html(numberOfPages); //전체 페이지수 출력
+	$('#toc-number-pages').html((numberOfPages)); //전체 페이지수 출력
 }
 
 /**
@@ -207,30 +200,6 @@ function printSingleBook() {
 	});
 
 	$('.number-pages').html(numberOfPages); //전체 페이지수 출력
-
-	//책 터치시 페이지 넘김 이벤트
-	/*
-            for (let i = 1; i < numberOfPages; i++) {   //페이지마다 반복
-                $('#data_' + i).bind('touchstart', function (e) {
-                    //터치 이벤트는 여러 손가락 터치를 인식하므로 첫번째 터치를 의미하는 touches[0] 사용
-                    //getBoundingClientRect(): 요소에 대한 뷰포트 기준의 상대적인 위치 정보를 구하는 메소드.(터치 이벤트는 offset 좌표가 없으므로 계산해서 구해야 함)
-                    const offset = e.target.getBoundingClientRect();
-                    const offsetX = e.touches[0].clientX - offset.x;
-
-                    let half = $(this).width()/2;
-
-                    //책의 왼쪽 클릭시 이전 페이지 이동
-                    if(offsetX < half) {
-                        $('#book-m').turn('previous');
-                    }
-                    //책의 오른쪽 클릭시 다음 페이지 이동
-                    else {
-                        $('#book-m').turn('next');
-                    }
-                });
-            }
-     */
-
 }
 
 /**
@@ -302,10 +271,4 @@ function openToc() {
  */
 function closeToc() {
 	$('.toc-container').removeClass('active');
-}
-
-function goPage(pageNum) {
-	//목차 리스트 관련 이벤트 초기화
-	$('#book').turn('page', pageNum);
-	closeToc();
 }

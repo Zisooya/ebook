@@ -342,8 +342,21 @@
 	let g_prevPageNumber = /*[[${pno}]]*/ 0;
 	let g_pageNumber;
 
+	const g_blankPages = [2, 4, 6, 29];	//더블 모드에서 빈 페이지로 설정할 페이지
+
+	//이미지맵이 포함되어야 하는 이미지에 대한 정보
+	const g_imageMapInfos = [
+		{	fileName: 25,
+			href: 'http://www.shinhooyhi.com',
+			coords: '655,2077,264,2017'
+		},
+		{	fileName: 26,
+			href: 'https://www.shinhooyhi.com/stolen-baby-stolen-dog',
+			coords: '87,151,1052,248'
+		}
+	]
+
 	console.log('이전 페이지 : '+g_prevPageNumber);
-	document.addEventListener("touchstart", function() {}, true);
 	//로딩 될 때
 	$(function(){
 		//기기별 ebook 출력
@@ -471,100 +484,110 @@
 		else{}
 	}
 
-	function addPage(page, book){
-		let ebookImageInfo = g_ebookImageInfo;
-		let numberOfPages = ebookImageInfo.imageCount;
-		let imagePath = ebookImageInfo.imagePath;
+	function addPage(page, book) {
+		const ebookImageInfo = g_ebookImageInfo;
+		const numberOfPages = ebookImageInfo.imageCount; //전체 페이지 수
+		const imagePath = ebookImageInfo.imagePath;
 
-		if (!book.turn('hasPage', page)){ //페이지가 이미 책에 있는지 체크
-			//페이지를 위한 요소
-			let element;
-			//모바일 아닌 경우
-			if(checkOrientation() === 'single'){
-				element = $('<div />', {'class': 'page', 'id': 'page-' + page}).html('<i class="loader"></i>');
-			}
-			//모바일인 경우
-			else if(checkOrientation() === 'double'){
-				let oddOrEven = (page%2===0) ? 'odd' : 'even';
-				element = $('<div />', {'class': 'page '+oddOrEven, 'id': 'page-'+page, 'onclick': 'turnBook(\''+oddOrEven+'\')'}).html('<i class="loader"></i>');
-			}
-			else{}
+		if (!book.turn('hasPage', page)) { //페이지가 이미 책에 있는지 체크
+			let element; //페이지를 위한 요소
+			const pageMode = checkOrientation(); //페이지 모드
+			const oddOrEven = (page % 2 === 0) ? 'odd' : 'even'; //홀수 or 짝수 페이지
 
-			//page에 element 요소를 추가
+			// 페이지 요소 생성
+			if (pageMode === 'single') {
+				element = $('<div />', { 'class': 'page', 'id': 'page-' + page }).html('<i class="loader"></i>');
+			} else if (pageMode === 'double') {
+				element = $('<div />', { 'class': `page ${oddOrEven}`, 'id': 'page-' + page, 'onclick': `turnBook('${oddOrEven}')` }).html('<i class="loader"></i>');
+			}
+
+			//페이지에 요소 추가
 			book.turn('addPage', element, page);
-//2,4,6페이지는 빈페이지
-//3p에 2번
-//5p에 3번
-//7p에 4번
-//8p부터는 변수
-//page+3p에 page번
-		 	if(checkOrientation() === 'double'){
-				//빈페이지 or 이미지맵(링크) 있는 페이지 별도 처리
-				if(page===2 || page===4 || page===6){
-					element.html('<div id="data_'+page+'" class="blankPage"></div>');
-				}
-				else if(page===3){
-					element.html('<img id="data_'+page+'" src="'+imagePath+'2.png">');
-				}
-				else if(page===5){
-					element.html('<img id="data_'+page+'" src="'+imagePath+'3.png">');
-				}
-				else if(page===7){
-					element.html('<img id="data_'+page+'" src="'+imagePath+'4.png">');
-				}
-				else if(page>=8 && page!== 28 && page!==29){
-					element.html('<img id="data_'+page+'" src="'+imagePath+(page-3)+'.png">');
-				}
-				else if(page === 28){ //28 페이지
-					element.html('<img id="data_'+page+'" src="'+imagePath+(page-3)+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
-				}
-				else if(page === 29){ //29 페이지
-					element.html('<img id="data_'+page+'" src="'+imagePath+(page-3)+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
-				}
-				else {
-					element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
-				}
-			}
-			else if(checkOrientation() === 'single'){
-				//이미지맵(링크) 있는 페이지 별도 처리
-				if(page === 25){
-					element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-1" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-1" name="image-map-1"><area target="_blank" alt="웹사이트" title="웹사이트" href="http://www.shinhooyhi.com" coords="655,2077,264,2017" shape="rect"></map>');
-				}
-				else if(page === 26){
-					element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png" alt="'+page+'" usemap="#image-map-2" style="width:100%; height: auto; z-index:9999999999!important;"><map id="image-map-2" name="image-map-2"><area target="_blank" alt="stolen-baby-stolen-dog" title="stolen-baby-stolen-dog" href="https://www.shinhooyhi.com/stolen-baby-stolen-dog" coords="87,151,1052,248" shape="rect"></map>');
-				}
-				else {
-					element.html('<img id="data_'+page+'" src="'+imagePath+page+'.png">');
-				}
-			}
 
-			let controller = '';
+			//해당 요소에 페이지 컨텐츠 삽입
+			setPageContent(element, page, imagePath);
 
-			if(checkOrientation() === 'single'){
-				//페이지 컨트롤러 삽입
-				controller = '    <div id="controls">\n' +
-
-					'        <div class="page-navi">\n' +
-					'            <label for="page-number"></label> <input type="text" id="page-number" value="' + page + '" readonly>/<span class="number-pages">' + numberOfPages + '</span>\n' +
-					'        </div>\n' +
-					'        <div class="toc-icon" ontouchstart="openToc()">\n' +
-					'            <span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>\n' +
-					'        </div>\n' +
-					'    </div>';
-			}
-			else if(checkOrientation() === 'double'){
-				//페이지 컨트롤러 삽입
-				controller = '' +
-					'	<div id="controls">\n' +
-					'		<div class="page-navi">\n' +
-					'			<label for="page-number"></label> <input type="text" id="page-number" value="' + page + '">/<span class="number-pages">' + (numberOfPages+3) + '</span>\n' +
-					'		</div>\n' +
-					'	</div>';
-			}
-			else{}
-
-			element.append(controller);
+			//해당 요소에 페이지 컨트롤러 삽입
+			element.append(getPageController(page, numberOfPages, pageMode));
 		}
+	}
+
+	function setPageContent(element, page, imagePath) {
+		const pageMode = checkOrientation(); //페이지 모드
+		let blankPages = g_blankPages; //더블 모드에서 빈 페이지로 설정할 페이지
+		let imageMapInfos = g_imageMapInfos; //이미지맵이 포함되어야 하는 이미지에 대한 정보
+
+		if (pageMode === 'double') {
+			//빈 페이지인 경우
+			if (blankPages.includes(page)){
+				element.html(`<div id="data_${page}" class="blankPage"></div>`);
+			}
+			//빈 페이지 아닌 경우
+			else if (!blankPages.includes(page)){
+				//현재 페이지 전에 있는 빈 페이지 개수 (해당 값만큼 페이지에 뿌려줄 이미지명 번호를 미뤄주기 위한 값)
+				let currentBlankPageCount = blankPages.filter(bp => bp < page).length;
+				let fileName = page-currentBlankPageCount;
+
+				//이미지맵이 있는 페이지 출력
+				if(imageMapInfos.some(info => info.fileName === fileName)){
+					let mapInfo = imageMapInfos.find(info => info.fileName === fileName);
+					let mapHref = mapInfo.href;
+					let mapCoords = mapInfo.coords;
+					element.html(`<img id="data_${page}" src="${imagePath + fileName}.png" alt="${page}" usemap="#image-map-${page}" style="width:100%; height: auto; z-index:9999999999!important;">
+            					 <map id="image-map-${page}" name="image-map-${page}">
+            					 	<area target="_blank" alt="${mapHref}" title="${mapHref}" href="${mapHref}" coords="${mapCoords}" shape="rect">
+            					 </map>`);
+				}
+				//이미지맵이 없는 페이지 출력
+				else {
+					element.html(`<img id="data_${page}" src="${imagePath + fileName}.png">`);
+				}
+			}
+		}
+		else if (pageMode === 'single') {
+			//이미지맵이 있는 페이지 출력
+			if (imageMapInfos.some(info => info.fileName === page)) {
+				let mapInfo = imageMapInfos.find(info => info.fileName === page);
+				let mapHref = mapInfo.href;
+				let mapCoords = mapInfo.coords;
+
+				element.html(`<img id="data_${page}" src="${imagePath + page}.png" alt="${page}" usemap="#image-map-${page}" style="width:100%; height: auto; z-index:9999999999!important;">
+            					 <map id="image-map-${page}" name="image-map-${page}">
+            					 	<area target="_blank" alt="${mapHref}" title="${mapHref}" href="${mapHref}" coords="${mapCoords}" shape="rect">
+            					 </map>`);
+			}
+			//이미지맵이 없는 페이지 출력
+			else {
+				element.html(`<img id="data_${page}" src="${imagePath + page}.png">`);
+			}
+		}
+	}
+
+	//페이지 모드에 따라 전자책 하단의 컨트롤러를 반환하는 함수
+	function getPageController(page, numberOfPages, pageMode) {
+		if (pageMode === 'single') {
+			return `
+            <div id="controls">
+                <div class="page-navi">
+                    <label for="page-number"></label>
+                    <input type="text" id="page-number" value="${page}" readonly />
+                    /<span class="number-pages">${numberOfPages}</span>
+                </div>
+                <div class="toc-icon" ontouchstart="openToc()">
+                    <span class="material-symbols-outlined" style="font-size:24px;">list_alt</span>
+                </div>
+            </div>`;
+		} else if (pageMode === 'double') {
+			return `
+            <div id="controls">
+                <div class="page-navi">
+                    <label for="page-number"></label>
+                    <input type="text" id="page-number" value="${page}" />
+                    /<span class="number-pages">${numberOfPages + g_blankPages.length}</span>
+                </div>
+            </div>`;
+		}
+		return '';
 	}
 
 	function printSingleBook(){
@@ -696,12 +719,12 @@
 							  '\t\t\t\t<li class="toc-li" value="5">처음으로<span>5p</span></li>\n' +
 							  '\t\t\t\t<li class="toc-li" value="8">본문<span>8p</span></li>\n' +
 							  '\t\t\t\t<li class="toc-li" value="28">저자 소개<span>28p</span></li>\n' +
-							  '\t\t\t\t<li class="toc-li" value="29">공연 정보<span>29p</span></li>');
+							  '\t\t\t\t<li class="toc-li" value="30">공연 정보<span>30p</span></li>');
 		}
 
 		$('.toc-container').addClass('active');
 
-		// 터치 이벤트 추가
+		//목차 리스트 터치시 해당 페이지로 이동하는 이벤트 추가
 		$('.toc-li').on('touchstart click', function(e) {
 			e.preventDefault(); //현재 이벤트의 기본 동작 중단
 			e.stopPropagation(); //현재 이벤트의 상위 전파 중단
