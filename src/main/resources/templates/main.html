@@ -114,6 +114,11 @@
 </style>
 <script th:inline="javascript">
     $(function () {
+        if(navigator.userAgent.match(/kakaotalk/i)){
+            //카카오톡으로 들어올 경우 외부브라우저로 호출
+            location.href = 'kakaotalk://web/openExternal?url='+encodeURIComponent(location.href);;
+        }
+
         $('#submitBtn').on('click', function (event) {
             goEbook();
         });
@@ -156,6 +161,7 @@
 
             if(isMatch) {
                 let device = detectDevice();
+
                 if(device === 'phone') {
                     location.href = '/ebook_p';
                 }
