@@ -729,10 +729,14 @@
 
 	//화면 전환 시 현재 페이지 값 POST 방식으로 전송
 	function reloadPost(){
+		const singleBlankPages = [2, 3, 4, 25]; //싱글에서 더블 모드로 전환 시 빈 페이지 계산을 위한 배열
 		let url = new URL(window.location.href);
-		let element = '';
+		let blankPages = g_blankPages; //더블 모드에서 빈 페이지로 설정할 페이지
+		let currentBlankPageCount = checkPageMode() === 'single' ? blankPages.filter(bp => bp < g_pageNumber).length : singleBlankPages.filter(bp => bp < g_pageNumber).length;
+		let pageNumber = checkPageMode() === 'single' ? g_pageNumber-currentBlankPageCount : g_pageNumber+currentBlankPageCount;
 
-		element+= '<input type="hidden" name="pageNumber" value="'+ g_pageNumber +'">';
+		let element = '';
+		element+= '<input type="hidden" name="pageNumber" value="'+ pageNumber +'">';
 
 		let goForm = $('<form>', {
 			method: 'post',
