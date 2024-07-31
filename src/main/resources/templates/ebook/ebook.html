@@ -647,8 +647,9 @@
 
 	//single 페이지 모드 책 출력
 	function printSingleBook(){
-		let ebookImageInfo = g_ebookImageInfo;
-		let numberOfPages = ebookImageInfo.imageCount;
+		let ebookImageInfo = g_ebookImageInfo; //출력할 이미지 정보
+		let numberOfPages = ebookImageInfo.imageCount; //전체 페이지 수
+		let imageMapInfos = g_imageMapInfos; //이미지맵이 포함되어야 하는 이미지에 대한 정보
 
 		//책 생성 및 출력
 		$('#book').turn({
@@ -677,7 +678,7 @@
 					$('.page-number').val(page);
 
 					//이미지맵(링크) 있는 페이지
-					if(page === 25 || page === 26){
+					if(imageMapInfos.some(info => info.fileName === page)){
 						//반응형 이미지맵 좌표 조정
 						$('map').imageMapResize();
 

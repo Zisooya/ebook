@@ -279,9 +279,9 @@
 
 	//single 페이지 모드 책 출력
 	function printSingleBook(){
-		let ebookImageInfo = g_ebookImageInfo;
+		let ebookImageInfo = g_ebookImageInfo; //출력할 이미지 정보
+		let numberOfPages = ebookImageInfo.imageCount; //전체 페이지 수
 		let imageMapInfos = g_imageMapInfos; //이미지맵이 포함되어야 하는 이미지에 대한 정보
-		let numberOfPages = ebookImageInfo.imageCount;
 
 		//모바일 영역 활성화
 		$('#mobile-wrap').css('display', 'block');
